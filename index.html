@@ -1,330 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<meta name="theme-color" content="#0a0a0a"/>
+<meta name="theme-color" content="#0c0c1d"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>StudyTrack</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<style>
-:root{--bg:#0a0a0a;--card:#111111;--card2:#161616;--border:#1e1e1e;--border2:#2a2a2a;--accent:#f97316;--accent-dim:rgba(249,115,22,0.15);--text:#ffffff;--text2:#a0a0a0;--text3:#555;--green:#22c55e;--red:#ef4444;--blue:#3b82f6;--sidebar-w:220px;--r:10px}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:14px}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden}
-button{cursor:pointer;font-family:'Inter',sans-serif;border:none;outline:none}
-input,textarea,select{font-family:'Inter',sans-serif;outline:none}
-a{color:inherit;text-decoration:none}
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:#333;border-radius:2px}
-.page{display:none;min-height:100vh}.page.active{display:flex}
-#page-auth{align-items:center;justify-content:center;background:#0a0a0a}
-.auth-card{background:#111;border:1px solid #1e1e1e;border-radius:16px;padding:40px;width:380px;max-width:95vw}
-.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;justify-content:center}
-.auth-logo-icon{width:36px;height:36px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
-.auth-logo-text{font-size:1.2rem;font-weight:700}
-.auth-tabs{display:flex;background:#1a1a1a;border-radius:8px;padding:3px;margin-bottom:24px;gap:3px}
-.auth-tab{flex:1;padding:8px;border-radius:6px;background:none;color:var(--text2);font-size:0.85rem;font-weight:500;transition:all .2s}
-.auth-tab.active{background:#222;color:var(--text)}
-.field{margin-bottom:14px}.field label{display:block;font-size:0.75rem;color:var(--text2);margin-bottom:6px;font-weight:500}
-.field input{width:100%;padding:10px 12px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;color:var(--text);font-size:0.88rem;transition:border .2s}
-.field input:focus{border-color:var(--accent)}
-.btn-primary{width:100%;padding:11px;border-radius:8px;background:var(--accent);color:#fff;font-weight:600;font-size:0.88rem;transition:opacity .2s}
-.btn-primary:hover{opacity:0.9}.btn-primary:disabled{opacity:0.5;cursor:not-allowed}
-.btn-google{width:100%;padding:10px;border-radius:8px;background:#1a1a1a;border:1px solid #2a2a2a;color:var(--text);font-size:0.85rem;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;transition:background .2s}
-.btn-google:hover{background:#222}
-.auth-divider{text-align:center;color:var(--text3);font-size:0.75rem;margin:12px 0;position:relative}
-.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:#222}
-.auth-divider::before{left:0}.auth-divider::after{right:0}
-.auth-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:9px 12px;color:#f87171;font-size:0.78rem;margin-bottom:12px;display:none}
-.auth-info{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);border-radius:8px;padding:12px;color:#60a5fa;font-size:0.78rem;margin-bottom:12px;display:none;line-height:1.5}
-.app-body{display:flex;flex-direction:row;flex:1;min-height:0}
-#page-app{flex-direction:column}
-#sidebar{width:var(--sidebar-w);flex-shrink:0;background:#0d0d0d;border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;position:sticky;top:0;overflow-y:auto}
-.sb-logo{display:flex;align-items:center;gap:9px;padding:18px 16px 14px}
-.sb-logo-icon{width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.95rem}
-.sb-logo-text{font-size:1rem;font-weight:700}
-.sb-divider{height:1px;background:var(--border);margin:0 16px 12px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 14px;margin:1px 8px;border-radius:8px;background:none;color:var(--text2);font-size:0.84rem;font-weight:500;width:calc(100% - 16px);text-align:left;transition:all .15s}
-.nav-item svg{width:16px;height:16px;flex-shrink:0}
-.nav-item:hover{background:#1a1a1a;color:var(--text)}
-.nav-item.active{background:var(--accent);color:#fff}
-.sb-bottom{margin-top:auto;padding:12px 8px;border-top:1px solid var(--border)}
-.sb-user{display:flex;align-items:center;gap:9px;padding:8px;cursor:pointer;border-radius:8px;transition:background .15s}
-.sb-user:hover{background:#1a1a1a}
-.sb-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;flex-shrink:0;overflow:hidden}
-.sb-user-info{flex:1;min-width:0}
-.sb-user-name{font-size:0.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sb-user-email{font-size:0.68rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sb-user-username{font-size:0.68rem;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
-.btn-logout{display:flex;align-items:center;gap:8px;padding:8px 14px;width:100%;background:none;color:var(--text2);font-size:0.82rem;font-weight:500;border-radius:8px;transition:all .15s;margin-top:4px}
-.btn-logout:hover{background:#1a1a1a;color:var(--red)}
-#main{flex:1;min-width:0;overflow-y:auto;height:100vh}
-.view{display:none;padding:28px 32px;min-height:100%}.view.active{display:block;animation:fadeIn .25s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.page-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px}
-.page-top-left h1{font-size:1.6rem;font-weight:700;display:flex;align-items:center;gap:10px}
-.page-top-left p{color:var(--text2);font-size:0.85rem;margin-top:3px}
-.btn-accent{display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;background:var(--accent);color:#fff;font-weight:600;font-size:0.82rem;transition:opacity .2s}
-.btn-accent:hover{opacity:0.9}
-.btn-icon{width:30px;height:30px;border-radius:7px;background:#1a1a1a;border:1px solid var(--border2);color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all .2s;flex-shrink:0}
-.btn-icon:hover{background:#222;color:var(--text)}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r)}.card-p{padding:20px}
-.dash-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-.dash-greeting h1{font-size:1.6rem;font-weight:700}.dash-greeting p{color:var(--text2);font-size:0.85rem;margin-top:2px}
-.streak-badge{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 16px;font-size:0.85rem;font-weight:600}
-.streak-badge .fire{color:var(--accent)}
-.clock-banner{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.clock-banner-left .clock-label{font-size:0.75rem;color:var(--text2);font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
-.clock-banner-left h2{font-size:1.1rem;font-weight:600}
-.clock-banner-left .timer-live{font-size:1.4rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;margin-top:4px}
-.btn-clock-in{display:flex;align-items:center;gap:8px;padding:11px 22px;border-radius:9px;background:var(--accent);color:#fff;font-weight:600;font-size:0.88rem;transition:opacity .2s}
-.btn-clock-in:hover{opacity:.9}.btn-clock-out{background:#222;border:1px solid #333;color:var(--red)}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-.stat-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px}
-.stat-box-top{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.stat-box-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.85rem}
-.stat-box-label{font-size:0.68rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
-.stat-box-val{font-size:1.5rem;font-weight:700;margin-bottom:2px}.stat-box-sub{font-size:0.72rem;color:var(--text2)}
-.dash-bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.section-title{font-size:0.9rem;font-weight:600;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
-.btn-link{font-size:0.78rem;color:var(--accent);font-weight:500;background:none;padding:0}.btn-link:hover{text-decoration:underline}
-.goal-mini{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}.goal-mini:last-child{border-bottom:none}
-.goal-check-btn{width:18px;height:18px;border-radius:50%;border:2px solid #333;background:none;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.65rem;transition:all .2s}
-.goal-check-btn.done{background:var(--green);border-color:var(--green);color:#fff}
-.goal-mini-text{font-size:0.83rem;flex:1;line-height:1.4}.goal-mini-text.done{text-decoration:line-through;color:var(--text2)}
-.goal-empty{color:var(--text2);font-size:0.83rem;text-align:center;padding:24px 0}.goal-empty a{color:var(--accent)}
-.activity-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}.activity-item:last-child{border-bottom:none}
-.activity-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;flex-shrink:0}
-.activity-icon.clockin{background:rgba(34,197,94,.15);color:var(--green)}
-.activity-icon.clockout{background:rgba(249,115,22,.15);color:var(--accent)}
-.activity-icon.note{background:rgba(59,130,246,.15);color:var(--blue)}
-.activity-icon.goal{background:rgba(168,85,247,.15);color:#a855f7}
-.activity-text{flex:1}.activity-text strong{font-weight:600;font-size:0.82rem}.activity-text span{font-size:0.82rem;color:var(--text2)}
-.activity-time{font-size:0.7rem;color:var(--text3);margin-top:2px}
-.date-nav{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-.date-nav-label{font-size:0.95rem;font-weight:600;min-width:150px}.date-nav-sub{font-size:0.78rem;color:var(--text2)}
-.btn-today{font-size:0.75rem;color:var(--accent);background:none;padding:0;font-weight:500}
-.goal-list{display:flex;flex-direction:column;gap:8px}
-.goal-card{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);transition:border .2s}
-.goal-card:hover{border-color:var(--border2)}.goal-card.done{opacity:0.6}
-.check-circle{width:20px;height:20px;border-radius:50%;border:2px solid #333;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.7rem;cursor:pointer;transition:all .2s}
-.check-circle.done{background:var(--green);border-color:var(--green);color:#fff}
-.goal-card-text{flex:1;font-size:0.88rem;line-height:1.4}.goal-card-text.done{text-decoration:line-through;color:var(--text2)}
-.goal-card-actions{display:flex;gap:6px;opacity:0;transition:opacity .2s}.goal-card:hover .goal-card-actions{opacity:1}
-.goal-action-btn{width:26px;height:26px;border-radius:6px;background:none;color:var(--text2);font-size:0.85rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.goal-action-btn:hover{background:#222;color:var(--red)}
-.goals-empty{text-align:center;padding:60px 20px;color:var(--text2)}.goals-empty .e-icon{font-size:2.5rem;margin-bottom:12px;opacity:.4}
-.session-clock-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:32px;text-align:center;margin-bottom:24px}
-.session-clock-icon{font-size:2rem;margin-bottom:8px;color:var(--text2)}
-.session-clock-title{font-size:1rem;font-weight:600;margin-bottom:4px}
-.session-clock-sub{font-size:0.82rem;color:var(--text2);margin-bottom:16px}
-.session-label-input{width:320px;max-width:90%;padding:9px 12px;background:#1a1a1a;border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:0.85rem;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto;text-align:center}
-.session-label-input:focus{border-color:var(--accent)}
-.session-clock-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 28px;border-radius:9px;background:var(--accent);color:#fff;font-weight:600;font-size:0.9rem}
-.session-clock-btn:hover{opacity:.9}
-.session-active-timer{font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent);margin:8px 0}
-.sessions-date-bar{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.sessions-total{margin-left:auto;font-size:0.82rem;color:var(--text2)}.sessions-total span{color:var(--accent);font-weight:600}
-.session-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px}
-.session-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0}
-.session-info-left{flex:1}.session-name{font-size:0.85rem;font-weight:500}.session-time{font-size:0.75rem;color:var(--text2);margin-top:2px}
-.session-dur{font-size:0.88rem;font-weight:700;color:var(--accent)}
-.note-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px}
-.note-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.mood-tag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:0.72rem;font-weight:600}
-.mood-Good{background:rgba(34,197,94,.15);color:var(--green)}.mood-Great{background:rgba(249,115,22,.15);color:var(--accent)}
-.mood-Okay{background:rgba(59,130,246,.15);color:var(--blue)}.mood-Tired{background:rgba(168,85,247,.15);color:#a855f7}
-.mood-Stressed{background:rgba(239,68,68,.15);color:var(--red)}
-.note-card-actions{display:flex;gap:6px}.note-card-body{font-size:0.85rem;color:#ddd;line-height:1.6}.note-card-time{font-size:0.72rem;color:var(--text3);margin-top:8px}
-.cal-layout{display:grid;grid-template-columns:1fr 280px;gap:20px}
-.cal-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px}
-.cal-nav-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.cal-month{font-size:1rem;font-weight:600}
-.cal-grid-head{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:8px}
-.cal-head-cell{text-align:center;font-size:0.72rem;color:var(--text2);font-weight:500;padding:4px}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-.cal-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:0.82rem;cursor:pointer;transition:all .15s;position:relative;flex-direction:column;gap:2px}
-.cal-cell:hover{background:#1a1a1a}.cal-cell.today{background:var(--accent);color:#fff;font-weight:700}
-.cal-cell.selected{background:#222;outline:1px solid var(--accent)}.cal-cell.other-month{color:var(--text3)}
-.cal-cell.has-events::after{content:'';width:4px;height:4px;border-radius:50%;background:var(--accent);position:absolute;bottom:4px}
-.cal-cell.today.has-events::after{background:#fff}
-.cal-sidebar{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px}
-.cal-sidebar-date{font-size:0.88rem;font-weight:600;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
-.cal-sidebar-date .add-link{font-size:0.75rem;color:var(--accent);background:none}
-.event-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}.event-item:last-child{border-bottom:none}
-.event-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:5px;flex-shrink:0}
-.event-title{font-size:0.82rem;font-weight:500}.event-time{font-size:0.72rem;color:var(--text2);margin-top:2px}
-.cal-no-events{color:var(--text2);font-size:0.82rem;text-align:center;padding:20px 0}
-.stats-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
-.stat-summary-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px}
-.stat-summary-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:0.68rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
-.stat-summary-val{font-size:1.6rem;font-weight:700}
-.chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px}
-.chart-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.chart-title{font-size:0.72rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
-.period-tabs{display:flex;gap:4px}.period-tab{padding:5px 10px;border-radius:6px;font-size:0.72rem;font-weight:500;background:none;color:var(--text2);transition:all .15s}
-.period-tab.active{background:#222;color:var(--text)}.chart-wrap{position:relative;height:180px}
-.stats-bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.streak-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}.streak-row:last-child{border-bottom:none}
-.streak-row-label{display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--text2)}
-.streak-row-val{font-size:0.88rem;font-weight:700;color:var(--accent)}.streak-row-val.white{color:var(--text)}
-.time-breakdown-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}.time-breakdown-row:last-child{border-bottom:none}
-.time-breakdown-label{font-size:0.85rem;color:var(--text2)}.time-breakdown-val{font-size:0.88rem;font-weight:700}
-.lb-podium{display:flex;justify-content:center;margin-bottom:28px}
-.lb-top-card{background:var(--card);border:1px solid rgba(249,115,22,.4);border-radius:12px;padding:24px;text-align:center;min-width:200px}
-.lb-medal{font-size:2rem;margin-bottom:8px}
-.lb-top-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;margin:0 auto 10px;overflow:hidden}
-.lb-top-name{font-size:0.95rem;font-weight:600;margin-bottom:4px}.lb-top-you{color:var(--accent);font-size:0.8rem}
-.lb-top-username{font-size:0.72rem;color:var(--text2);margin-bottom:2px}
-.lb-top-streak{color:var(--accent);font-size:0.85rem;font-weight:600;margin-top:4px}.lb-top-time{color:var(--text2);font-size:0.78rem}
-.lb-table{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
-.lb-table-head{display:grid;grid-template-columns:40px 1fr 100px 100px 80px;gap:8px;padding:10px 16px;background:#161616;border-bottom:1px solid var(--border);font-size:0.68rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
-.lb-row{display:grid;grid-template-columns:40px 1fr 100px 100px 80px;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);align-items:center;transition:background .15s;cursor:pointer}
-.lb-row:last-child{border-bottom:none}.lb-row:hover{background:#161616}.lb-row.me{background:rgba(249,115,22,.06)}
-.lb-rank{font-size:0.85rem;color:var(--text2);font-weight:500}
-.lb-user{display:flex;align-items:center;gap:10px}
-.lb-user-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0;overflow:hidden}
-.lb-user-name{font-size:0.84rem;font-weight:500}.lb-user-you{font-size:0.68rem;color:var(--accent)}
-.lb-user-username{font-size:0.68rem;color:var(--text2)}
-.lb-streak-val{font-size:0.82rem;color:var(--accent);font-weight:600}.lb-time-val{font-size:0.82rem;font-weight:600}.lb-goals-val{font-size:0.82rem;color:var(--text2)}
-.community-layout{display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start}
-.members-list{display:flex;flex-direction:column;gap:6px}
-.section-label{font-size:0.68rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
-.member-card{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;cursor:pointer;transition:background .15s;border:1px solid transparent}
-.member-card:hover{background:#161616}.member-card.selected{background:#161616;border-color:var(--border2)}
-.member-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;flex-shrink:0;overflow:hidden;position:relative}
-.online-dot{position:absolute;bottom:1px;right:1px;width:8px;height:8px;border-radius:50%;background:var(--green);border:1.5px solid var(--bg)}
-.member-info{flex:1;min-width:0}.member-name{font-size:0.84rem;font-weight:500}.member-status{font-size:0.72rem;color:var(--text2);margin-top:1px}
-.member-username{font-size:0.68rem;color:var(--accent)}
-.member-status.studying{color:var(--green)}.you-tag{font-size:0.65rem;color:var(--accent);font-weight:600}
-.community-detail{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;min-height:400px}
-.cd-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;color:var(--text2)}.cd-empty-icon{font-size:2rem;margin-bottom:10px;opacity:.4}
-.cd-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
-.cd-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;overflow:hidden}
-.cd-name{font-size:1rem;font-weight:600}.cd-sub{font-size:0.78rem;color:var(--text2);margin-top:2px}
-.cd-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
-.cd-stat{background:#161616;border-radius:9px;padding:12px;text-align:center}.cd-stat-val{font-size:1.1rem;font-weight:700;margin-bottom:2px}.cd-stat-label{font-size:0.7rem;color:var(--text2)}
-.cd-goals-title{font-size:0.78rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
-.cd-goal-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:0.83rem}.cd-goal-item:last-child{border-bottom:none}
-.cd-check{width:14px;height:14px;border-radius:50%;border:1.5px solid #333;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.55rem}
-.cd-check.done{background:var(--green);border-color:var(--green);color:#fff}
-.overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
-.overlay.open{opacity:1;pointer-events:all}
-.modal{background:#111;border:1px solid #2a2a2a;border-radius:14px;padding:24px;width:100%;max-width:440px;transform:scale(.95);transition:transform .25s}
-.overlay.open .modal{transform:scale(1)}
-.modal-title{font-size:1rem;font-weight:700;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between}
-.modal-close{width:26px;height:26px;border-radius:6px;background:#222;color:var(--text2);font-size:1rem;display:flex;align-items:center;justify-content:center}.modal-close:hover{color:var(--text)}
-.modal-field{margin-bottom:14px}.modal-field label{display:block;font-size:0.75rem;color:var(--text2);font-weight:500;margin-bottom:6px}
-.modal-field input,.modal-field textarea,.modal-field select{width:100%;padding:9px 12px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;color:var(--text);font-size:0.85rem}
-.modal-field input:focus,.modal-field textarea:focus,.modal-field select:focus{border-color:var(--accent)}
-.modal-field textarea{resize:none;min-height:90px;line-height:1.6}
-.mood-options{display:flex;gap:6px;flex-wrap:wrap}.mood-opt{padding:5px 12px;border-radius:999px;font-size:0.75rem;font-weight:500;border:1px solid var(--border2);background:none;color:var(--text2);transition:all .2s}
-.mood-opt.active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
-.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
-.btn-modal-cancel{padding:8px 16px;border-radius:8px;background:#1a1a1a;color:var(--text2);font-size:0.82rem}
-.btn-modal-submit{padding:8px 18px;border-radius:8px;background:var(--accent);color:#fff;font-weight:600;font-size:0.82rem}
-#toast-wrap{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px}
-.toast{padding:11px 16px;border-radius:9px;font-size:0.82rem;font-weight:500;background:#222;border:1px solid #333;color:var(--text);display:flex;align-items:center;gap:8px;animation:toastIn .25s ease;max-width:280px}
-.toast.ok{border-color:rgba(34,197,94,.4);color:var(--green)}.toast.err{border-color:rgba(239,68,68,.4);color:var(--red)}
-@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-.setup-banner{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);border-radius:10px;padding:16px 20px;margin-bottom:16px;font-size:0.82rem;color:#93c5fd;display:none;line-height:1.6}
-.setup-banner button{margin-top:8px;padding:8px 16px;border-radius:8px;background:var(--blue);color:#fff;font-weight:600;font-size:0.8rem}
-/* ── Mobile bottom nav ────────────────────── */
-.mobile-header{display:none;position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:10px 16px;align-items:center;justify-content:space-between}
-.mobile-header-logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:1rem}
-.mobile-header-logo span{background:var(--accent);width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.8rem}
-.mobile-header-profile{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;cursor:pointer}
-.mobile-bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:#0d0d0d;border-top:1px solid var(--border);padding:6px 0 env(safe-area-inset-bottom,6px)}
-.mobile-nav-items{display:flex;justify-content:space-around;align-items:center}
-.mob-nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 6px;background:none;color:var(--text3);font-size:.6rem;font-weight:500;min-width:0;flex:1;transition:color .15s}
-.mob-nav-item svg{width:18px;height:18px}
-.mob-nav-item.active{color:var(--accent)}
-.mob-nav-item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:56px}
-.mob-profile-btn{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;cursor:pointer;background:var(--accent);color:#fff}
-
-/* ── Responsive: Tablet ───────────────────── */
-@media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr)}.stats-summary{grid-template-columns:repeat(2,1fr)}.dash-bottom{grid-template-columns:1fr}.cal-layout{grid-template-columns:1fr}.community-layout{grid-template-columns:1fr}.stats-bottom{grid-template-columns:1fr}}
-@media(max-width:900px){.stats-grid,.stats-summary{grid-template-columns:1fr 1fr}.dash-bottom,.cal-layout,.community-layout,.stats-bottom{grid-template-columns:1fr}.lb-table-head,.lb-row{grid-template-columns:36px 1fr 70px 70px 60px;gap:4px;padding:10px 12px}.lb-table-head{font-size:.6rem}.lb-streak-val,.lb-time-val,.lb-goals-val{font-size:.75rem}.page-top{flex-direction:column;gap:12px;align-items:flex-start}.cd-stats{grid-template-columns:repeat(3,1fr);gap:8px}}
-
-/* ── Responsive: Mobile ───────────────────── */
-@media(max-width:700px){
-  #sidebar{display:none!important}
-  .mobile-header{display:flex}
-  .mobile-bottom-nav{display:block}
-  .app-body{flex:1;min-height:0}
-  #main{padding-bottom:70px}
-  .view{padding:16px 14px}
-  .page-top{flex-direction:column;gap:10px;align-items:flex-start}
-  .page-top-left h1{font-size:1.3rem}
-  .stats-grid,.stats-summary{grid-template-columns:1fr 1fr;gap:10px}
-  .stat-box{padding:12px}
-  .stat-box-val{font-size:1.2rem}
-  .dash-top{flex-direction:column;gap:10px;align-items:flex-start}
-  .dash-greeting h1{font-size:1.3rem}
-  .clock-banner{flex-direction:column;gap:14px;text-align:center;align-items:stretch}
-  .clock-banner-left{text-align:center}
-  .clock-banner-left .timer-live{font-size:1.3rem}
-  .btn-clock-in{width:100%;justify-content:center}
-  .dash-bottom{grid-template-columns:1fr}
-  .cal-layout{grid-template-columns:1fr}
-  .community-layout{grid-template-columns:1fr}
-  .stats-bottom{grid-template-columns:1fr}
-  .session-clock-card{padding:20px 16px}
-  .session-label-input{width:100%}
-  .session-active-timer{font-size:1.5rem}
-  .auth-card{padding:28px 20px;width:100%;border-radius:12px}
-  .modal{max-width:100%;margin:0 8px;padding:20px 16px;border-radius:12px;max-height:90vh;overflow-y:auto}
-  .overlay{padding:10px;align-items:flex-end}
-  .overlay.open .modal{border-radius:12px 12px 0 0}
-  .lb-podium{margin-bottom:16px}
-  .lb-top-card{padding:16px;min-width:auto}
-  .lb-table{overflow-x:auto}
-  .lb-table-head,.lb-row{grid-template-columns:32px 1fr 60px 60px 50px;gap:4px;padding:10px 10px;font-size:.7rem}
-  .lb-table-head{font-size:.58rem}
-  .lb-streak-val,.lb-time-val,.lb-goals-val{font-size:.72rem}
-  .lb-user-av{width:26px;height:26px;font-size:.65rem}
-  .cd-header{flex-direction:column;text-align:center;gap:10px}
-  .cd-stats{grid-template-columns:repeat(3,1fr);gap:8px}
-  .cd-stat{padding:10px 6px}
-  .cd-stat-val{font-size:.95rem}
-  .cd-stat-label{font-size:.62rem}
-  .cal-grid-head .cal-head-cell{font-size:.65rem;padding:3px}
-  .cal-cell{font-size:.72rem;border-radius:6px}
-  .cal-cell span{font-size:.7rem}
-  .goal-card{padding:12px}
-  .goal-card-actions{opacity:1}
-  .note-card{padding:12px}
-  .date-nav{gap:8px}
-  .date-nav-label{font-size:.85rem;min-width:auto}
-  .btn-accent{padding:8px 14px;font-size:.78rem}
-  .chart-wrap{height:140px}
-  .toast{max-width:240px;font-size:.78rem}
-  .members-list{flex-direction:row;flex-wrap:wrap;gap:8px}
-  .member-card{flex:1;min-width:140px;padding:8px 10px}
-  .member-av{width:30px;height:30px;font-size:.75rem}
-}
-@media(max-width:400px){
-  .stats-grid,.stats-summary{grid-template-columns:1fr}
-  .view{padding:12px 10px}
-  .auth-card{padding:24px 16px}
-  .lb-table-head,.lb-row{grid-template-columns:28px 1fr 50px 50px}
-  .lb-goals-val{display:none}
-  .lb-table-head div:last-child{display:none}
-  .cd-stats{grid-template-columns:1fr 1fr}
-}
-</style>
+<link rel="stylesheet" href="studyapp.css"/>
 </head>
 <body>
 
+<!-- ═══ AUTH PAGE ═══ -->
 <div id="page-auth" class="page active">
   <div class="auth-card">
-    <div class="auth-logo"><div class="auth-logo-icon">📈</div><div class="auth-logo-text">StudyTrack</div></div>
+    <div class="auth-logo">
+      <div class="auth-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="auth-logo-text">StudyTrack</div>
+    </div>
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
       <button class="auth-tab" onclick="switchTab('register')">Sign Up</button>
@@ -332,17 +29,18 @@ a{color:inherit;text-decoration:none}
     <div id="auth-err" class="auth-err"></div>
     <div id="form-login">
       <div class="field"><label>Email</label><input type="email" id="l-email" placeholder="you@email.com" onkeydown="if(event.key==='Enter')loginEmail()"/></div>
-      <div class="field"><label>Password</label><input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')loginEmail()"/></div>
+      <div class="field"><label>Password</label><input type="password" id="l-pass" placeholder="Enter your password" onkeydown="if(event.key==='Enter')loginEmail()"/></div>
       <button class="btn-primary" onclick="loginEmail()" id="l-btn">Sign In</button>
       <div class="auth-divider">or</div>
-      <button class="btn-google" onclick="loginDemo()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-        Try Demo Account
+      <button class="btn-offline" onclick="loginOffline()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Continue without signing in
       </button>
+      <div class="auth-offline-note">Data is stored locally on this device only</div>
     </div>
     <div id="form-register" style="display:none">
       <div class="field"><label>Display Name</label><input type="text" id="r-name" placeholder="Your name"/></div>
-      <div class="field"><label>Username</label><input type="text" id="r-username" placeholder="Choose a unique username" onkeydown="if(event.key===' ')event.preventDefault()'"/></div>
+      <div class="field"><label>Username</label><input type="text" id="r-username" placeholder="Choose a unique username" onkeydown="if(event.key===' ')event.preventDefault()"/></div>
       <div class="field"><label>Email</label><input type="email" id="r-email" placeholder="you@email.com"/></div>
       <div class="field"><label>Password</label><input type="password" id="r-pass" placeholder="Min 6 characters"/></div>
       <button class="btn-primary" onclick="registerEmail()" id="r-btn">Create Account</button>
@@ -350,39 +48,86 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
+<!-- ═══ APP PAGE ═══ -->
 <div id="page-app" class="page">
   <!-- Mobile Header -->
   <div class="mobile-header">
-    <div class="mobile-header-logo"><span>📈</span> StudyTrack</div>
-    <div class="mobile-header-profile" id="mob-profile-btn" onclick="openProfileModal()"></div>
+    <div class="mobile-header-logo">
+      <div class="mobile-header-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      StudyTrack
+    </div>
+    <div class="mobile-header-right">
+      <div class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        <svg class="toggle-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="toggle-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </div>
+      <div class="mobile-header-profile" id="mob-profile-btn" onclick="openProfileModal()"></div>
+    </div>
   </div>
+
   <div class="app-body">
+  <!-- Sidebar -->
   <nav id="sidebar">
-    <div class="sb-logo"><div class="sb-logo-icon">📈</div><div class="sb-logo-text">StudyTrack</div></div>
-    <div class="sb-divider"></div>
-    <button class="nav-item active" data-view="dashboard" onclick="showView('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Dashboard</button>
-    <button class="nav-item" data-view="goals" onclick="showView('goals')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Goals</button>
-    <button class="nav-item" data-view="sessions" onclick="showView('sessions')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Sessions</button>
-    <button class="nav-item" data-view="notes" onclick="showView('notes')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Notes</button>
-    <button class="nav-item" data-view="calendar" onclick="showView('calendar')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</button>
-    <button class="nav-item" data-view="stats" onclick="showView('stats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Stats</button>
-    <button class="nav-item" data-view="leaderboard" onclick="showView('leaderboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Leaderboard</button>
-    <button class="nav-item" data-view="community" onclick="showView('community')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Community</button>
+    <div class="sb-logo">
+      <div class="sb-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="sb-logo-text">StudyTrack</div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-label">Main</div>
+      <button class="nav-item active" data-view="dashboard" onclick="showView('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</button>
+      <button class="nav-item" data-view="goals" onclick="showView('goals')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Goals</button>
+      <button class="nav-item" data-view="sessions" onclick="showView('sessions')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Sessions</button>
+      <button class="nav-item" data-view="notes" onclick="showView('notes')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Notes</button>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-label">Planning</div>
+      <button class="nav-item" data-view="calendar" onclick="showView('calendar')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</button>
+      <button class="nav-item" data-view="stats" onclick="showView('stats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Stats</button>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-label">Social</div>
+      <button class="nav-item" data-view="leaderboard" onclick="showView('leaderboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Leaderboard</button>
+      <button class="nav-item" data-view="community" onclick="showView('community')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Community</button>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-label">Config</div>
+      <button class="nav-item" data-view="settings" onclick="showView('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</button>
+    </div>
     <div class="sb-bottom">
-      <div class="sb-user" onclick="openProfileModal()" title="Edit profile & change password"><div class="sb-avatar" id="sb-avatar"></div><div class="sb-user-info"><div class="sb-user-name" id="sb-name">Loading…</div><div class="sb-user-email" id="sb-email"></div><div class="sb-user-username" id="sb-username"></div></div></div>
-      <button class="btn-logout" onclick="logout()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Log out</button>
+      <div class="sb-user" onclick="openProfileModal()" title="Edit profile & change password">
+        <div class="sb-avatar" id="sb-avatar"></div>
+        <div class="sb-user-info">
+          <div class="sb-user-name" id="sb-name">Loading...</div>
+          <div class="sb-user-username" id="sb-username"></div>
+          <div class="sb-offline-badge" id="sb-offline-badge" style="display:none">Local Mode</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 10px">
+        <div class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+          <svg class="toggle-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="toggle-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </div>
+        <button class="btn-logout" onclick="logout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Log out</button>
+      </div>
     </div>
   </nav>
 
+  <!-- Main Content -->
   <main id="main">
+
+    <!-- Dashboard -->
     <div id="view-dashboard" class="view active">
       <div id="setup-banner" class="setup-banner">
-        <strong>Database Setup Required</strong><br>Click below to automatically create the required tables in your Supabase project.
-        <br><button onclick="setupDatabase()">Setup Database Now</button>
+        <strong>Database Setup Required</strong><br/>Click below to automatically create the required tables in your Supabase project.
+        <br/><button onclick="setupDatabase()">Setup Database Now</button>
       </div>
       <div class="dash-top">
         <div class="dash-greeting"><h1 id="d-greeting">Good afternoon</h1><p id="d-date"></p></div>
-        <div class="streak-badge"><span class="fire">🔥</span><span id="d-streak-badge">0 day streak</span></div>
+        <div class="dash-top-right">
+          <div class="streak-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span id="d-streak-badge">0 day streak</span></div>
+          <button class="btn-ghost" onclick="openFocusMode()" title="Focus Mode (F)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Focus</button>
+          <button class="btn-ghost" onclick="openCommandPalette()" title="Command Palette (Ctrl+K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10M7 12h6"/></svg>Commands</button>
+        </div>
       </div>
       <div class="clock-banner" id="d-clock-banner">
         <div class="clock-banner-left">
@@ -390,13 +135,15 @@ a{color:inherit;text-decoration:none}
           <h2 id="d-clock-title">Start your session</h2>
           <div class="timer-live" id="d-timer" style="display:none">00:00:00</div>
         </div>
-        <button class="btn-clock-in" id="d-clock-btn" onclick="toggleClockDash()"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>Clock In</button>
+        <button class="btn-clock-in" id="d-clock-btn" onclick="toggleClockDash()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>Clock In
+        </button>
       </div>
       <div class="stats-grid">
-        <div class="stat-box"><div class="stat-box-top"><div class="stat-box-icon" style="background:rgba(59,130,246,.15);color:#3b82f6">🎯</div><div class="stat-box-label">Today's Goals</div></div><div class="stat-box-val" id="d-goals-val">0/0</div><div class="stat-box-sub" id="d-goals-sub">No goals yet</div></div>
-        <div class="stat-box"><div class="stat-box-top"><div class="stat-box-icon" style="background:rgba(34,197,94,.15);color:#22c55e">⏱</div><div class="stat-box-label">Today's Time</div></div><div class="stat-box-val" id="d-today-val">0m</div><div class="stat-box-sub">focused today</div></div>
-        <div class="stat-box"><div class="stat-box-top"><div class="stat-box-icon" style="background:rgba(168,85,247,.15);color:#a855f7">📈</div><div class="stat-box-label">Weekly Time</div></div><div class="stat-box-val" id="d-week-val">0m</div><div class="stat-box-sub">this week</div></div>
-        <div class="stat-box"><div class="stat-box-top"><div class="stat-box-icon" style="background:rgba(249,115,22,.15);color:var(--accent)">⚡</div><div class="stat-box-label">Completion Rate</div></div><div class="stat-box-val" id="d-rate-val">0%</div><div class="stat-box-sub">all time</div></div>
+        <div class="stat-box"><div class="stat-box-top"><div class="stat-box-icon" style="background:var(--accent-dim);color:var(--accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><div class="stat-box-label">Today's Goals</div></div><div class="stat-box-val" id="d-goals-val">0/0</div><div class="stat-box-sub" id="d-goals-sub">No goals yet</div></div>
+        <div class="stat-box"><div class="stat-box-top"><div class="stat-box-icon" style="background:var(--green-dim);color:var(--green)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="stat-box-label">Today's Time</div></div><div class="stat-box-val" id="d-today-val">0m</div><div class="stat-box-sub">focused today</div></div>
+        <div class="stat-box"><div class="stat-box-top"><div class="stat-box-icon" style="background:var(--purple-dim);color:var(--purple)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div class="stat-box-label">Weekly Time</div></div><div class="stat-box-val" id="d-week-val">0m</div><div class="stat-box-sub">this week</div></div>
+        <div class="stat-box"><div class="stat-box-top"><div class="stat-box-icon" style="background:var(--amber-dim);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="stat-box-label">Completion Rate</div></div><div class="stat-box-val" id="d-rate-val">0%</div><div class="stat-box-sub">all time</div></div>
       </div>
       <div class="dash-bottom">
         <div class="card card-p"><div class="section-title">Today's Goals<button class="btn-link" onclick="showView('goals')">View All</button></div><div id="d-goal-list"><div class="goal-empty">No goals for today. <a href="#" onclick="showView('goals');return false">Add one</a></div></div></div>
@@ -404,38 +151,70 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
 
+    <!-- Goals -->
     <div id="view-goals" class="view">
-      <div class="page-top"><div class="page-top-left"><h1>🎯 Goals</h1><p>Set and track your daily objectives</p></div><button class="btn-accent" onclick="openModal('modal-goal')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Goal</button></div>
-      <div class="date-nav"><button class="btn-icon" onclick="goalDateNav(-1)">‹</button><div><div class="date-nav-label" id="goals-date-label">Friday</div><div class="date-nav-sub" id="goals-date-sub"></div></div><button class="btn-icon" onclick="goalDateNav(1)">›</button><button class="btn-today" id="goals-today-btn" onclick="goalGoToday()" style="display:none">Today</button></div>
+      <div class="page-top"><div class="page-top-left"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Goals</h1><p>Set and track your daily objectives</p></div><button class="btn-accent" onclick="openModal('modal-goal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Goal</button></div>
+      <div class="date-nav"><button class="btn-icon" onclick="goalDateNav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="date-nav-label" id="goals-date-label">Friday</div><div class="date-nav-sub" id="goals-date-sub"></div></div><button class="btn-icon" onclick="goalDateNav(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button><button class="btn-today" id="goals-today-btn" onclick="goalGoToday()" style="display:none">Today</button></div>
       <div id="goals-list-wrap"></div>
     </div>
 
+    <!-- Sessions + Pomodoro -->
     <div id="view-sessions" class="view">
-      <div class="page-top"><div class="page-top-left"><h1>⏱ Sessions</h1><p>Clock in to track your study time</p></div></div>
+      <div class="page-top"><div class="page-top-left"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Sessions</h1><p>Clock in and use the Pomodoro timer to stay focused</p></div></div>
       <div class="session-clock-card" id="sess-clock-card">
-        <div class="session-clock-icon" id="sess-icon">🕐</div>
-        <div class="session-active-timer" id="sess-timer" style="display:none">00:00:00</div>
-        <div class="session-clock-title" id="sess-title">Not clocked in</div>
-        <div class="session-clock-sub" id="sess-sub">Start a session to track your focus time</div>
-        <input class="session-label-input" id="sess-label" placeholder="Session label (optional)..." style="display:none"/>
-        <input class="session-label-input" id="sess-label-input-idle" placeholder="Session label (optional)..."/>
-        <button class="session-clock-btn" id="sess-btn" onclick="toggleClockSess()"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>Clock In</button>
+        <!-- Pomodoro Ring -->
+        <div class="pomo-ring-wrap">
+          <svg class="pomo-ring-svg" viewBox="0 0 200 200">
+            <circle class="pomo-ring-bg" cx="100" cy="100" r="88"/>
+            <circle class="pomo-ring-fg" id="pomo-ring-fg" cx="100" cy="100" r="88" stroke-dasharray="553" stroke-dashoffset="0"/>
+          </svg>
+          <div class="pomo-ring-center">
+            <div class="pomo-time" id="pomo-time">25:00</div>
+            <div class="pomo-label" id="pomo-label">Focus</div>
+          </div>
+        </div>
+        <!-- Pomodoro Modes -->
+        <div class="pomo-modes">
+          <button class="pomo-mode active" onclick="setPomoMode('focus')">Focus 25m</button>
+          <button class="pomo-mode" onclick="setPomoMode('short')">Short 5m</button>
+          <button class="pomo-mode" onclick="setPomoMode('long')">Long 15m</button>
+        </div>
+        <!-- Controls -->
+        <div class="pomo-controls">
+          <button class="pomo-btn pomo-btn-sec" onclick="resetPomo()" title="Reset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
+          <button class="pomo-btn pomo-btn-play" id="pomo-play-btn" onclick="togglePomo()"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg></button>
+          <button class="pomo-btn pomo-btn-sec" onclick="openFocusMode()" title="Focus Mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></button>
+        </div>
+        <!-- Label -->
+        <input class="session-label-input" id="sess-label" placeholder="Session label (optional)..."/>
+        <!-- Pomo Tally -->
+        <div class="pomo-tally" id="pomo-tally"></div>
+        <!-- Ambient Sounds -->
+        <div class="ambient-bar" id="ambient-bar">
+          <button class="ambient-btn" data-sound="rain" onclick="toggleAmbient('rain',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6l3.5 3.5"/><circle cx="12" cy="14" r="8"/></svg>Rain</button>
+          <button class="ambient-btn" data-sound="waves" onclick="toggleAmbient('waves',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2s2.5 2 2.5 2"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2s2.5 2 2.5 2"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2s2.5 2 2.5 2"/></svg>Waves</button>
+          <button class="ambient-btn" data-sound="wind" onclick="toggleAmbient('wind',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>Wind</button>
+          <button class="ambient-btn" data-sound="brown" onclick="toggleAmbient('brown',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 4 18 3-9h6"/></svg>Brown</button>
+          <input type="range" class="ambient-vol" min="0" max="100" value="40" oninput="setAmbientVol(this.value)" title="Volume"/>
+        </div>
       </div>
-      <div class="sessions-date-bar"><button class="btn-icon" onclick="sessDateNav(-1)">‹</button><div><div style="font-size:.88rem;font-weight:600" id="sess-date-label">Friday</div><div style="font-size:.72rem;color:var(--text2)" id="sess-date-sub"></div></div><button class="btn-icon" onclick="sessDateNav(1)">›</button><button class="btn-today" id="sess-today-btn" onclick="sessGoToday()" style="display:none">Today</button><div class="sessions-total">Total: <span id="sess-total">0m</span></div></div>
+      <div class="sessions-date-bar"><button class="btn-icon" onclick="sessDateNav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div><div style="font-size:.88rem;font-weight:600" id="sess-date-label">Friday</div><div style="font-size:.72rem;color:var(--text2)" id="sess-date-sub"></div></div><button class="btn-icon" onclick="sessDateNav(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button><button class="btn-today" id="sess-today-btn" onclick="sessGoToday()" style="display:none">Today</button><div class="sessions-total">Total: <span id="sess-total">0m</span></div></div>
       <div id="sess-list"></div>
     </div>
 
+    <!-- Notes -->
     <div id="view-notes" class="view">
-      <div class="page-top"><div class="page-top-left"><h1>📖 Notes</h1><p>Daily reflections and thoughts</p></div><button class="btn-accent" onclick="openModal('modal-note')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Note</button></div>
-      <div class="date-nav"><button class="btn-icon" onclick="noteDateNav(-1)">‹</button><div><div class="date-nav-label" id="notes-date-label">Friday</div><div class="date-nav-sub" id="notes-date-sub"></div></div><button class="btn-icon" onclick="noteDateNav(1)">›</button><button class="btn-today" id="notes-today-btn" onclick="noteGoToday()" style="display:none">Today</button></div>
+      <div class="page-top"><div class="page-top-left"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Notes</h1><p>Daily reflections and thoughts</p></div><button class="btn-accent" onclick="openModal('modal-note')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Note</button></div>
+      <div class="date-nav"><button class="btn-icon" onclick="noteDateNav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="date-nav-label" id="notes-date-label">Friday</div><div class="date-nav-sub" id="notes-date-sub"></div></div><button class="btn-icon" onclick="noteDateNav(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button><button class="btn-today" id="notes-today-btn" onclick="noteGoToday()" style="display:none">Today</button></div>
       <div id="notes-list"></div>
     </div>
 
+    <!-- Calendar -->
     <div id="view-calendar" class="view">
-      <div class="page-top"><div class="page-top-left"><h1>📅 Calendar</h1><p>Schedule meetings, study sessions, and deadlines</p></div><button class="btn-accent" onclick="openModal('modal-event')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Event</button></div>
+      <div class="page-top"><div class="page-top-left"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</h1><p>Schedule study sessions and deadlines</p></div><button class="btn-accent" onclick="openModal('modal-event')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Event</button></div>
       <div class="cal-layout">
         <div class="cal-wrap">
-          <div class="cal-nav-row"><button class="btn-icon" onclick="calNav(-1)">‹</button><div class="cal-month" id="cal-month-label"></div><button class="btn-icon" onclick="calNav(1)">›</button></div>
+          <div class="cal-nav-row"><button class="btn-icon" onclick="calNav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="cal-month" id="cal-month-label"></div><button class="btn-icon" onclick="calNav(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button></div>
           <div class="cal-grid-head"><div class="cal-head-cell">Mon</div><div class="cal-head-cell">Tue</div><div class="cal-head-cell">Wed</div><div class="cal-head-cell">Thu</div><div class="cal-head-cell">Fri</div><div class="cal-head-cell">Sat</div><div class="cal-head-cell">Sun</div></div>
           <div class="cal-grid" id="cal-grid"></div>
         </div>
@@ -446,41 +225,103 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
 
+    <!-- Stats -->
     <div id="view-stats" class="view">
-      <div class="page-top-left" style="margin-bottom:24px"><h1 style="font-size:1.6rem;font-weight:700;display:flex;align-items:center;gap:10px">📊 Statistics</h1><p style="color:var(--text2);font-size:.85rem;margin-top:3px">Your performance over time</p></div>
+      <div class="page-top-left" style="margin-bottom:24px"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Statistics</h1><p style="color:var(--text2);font-size:.85rem;margin-top:4px">Your performance over time</p></div>
       <div class="stats-summary">
-        <div class="stat-summary-box"><div class="stat-summary-top">🔥 Current Streak</div><div class="stat-summary-val" id="st-streak">0 days</div></div>
-        <div class="stat-summary-box"><div class="stat-summary-top">⏱ Total Time</div><div class="stat-summary-val" id="st-total">0m</div></div>
-        <div class="stat-summary-box"><div class="stat-summary-top">🎯 Goals Completed</div><div class="stat-summary-val" id="st-goals">0</div></div>
-        <div class="stat-summary-box"><div class="stat-summary-top">📈 Completion Rate</div><div class="stat-summary-val" id="st-rate">0%</div></div>
+        <div class="stat-summary-box"><div class="stat-summary-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Current Streak</div><div class="stat-summary-val" id="st-streak">0 days</div></div>
+        <div class="stat-summary-box"><div class="stat-summary-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Total Time</div><div class="stat-summary-val" id="st-total">0m</div></div>
+        <div class="stat-summary-box"><div class="stat-summary-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Goals Completed</div><div class="stat-summary-val" id="st-goals">0</div></div>
+        <div class="stat-summary-box"><div class="stat-summary-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>Completion Rate</div><div class="stat-summary-val" id="st-rate">0%</div></div>
+      </div>
+      <!-- Activity Heatmap (GitHub-style) -->
+      <div class="chart-card heatmap-card">
+        <div class="chart-card-top"><div class="chart-title">ACTIVITY</div>
+          <div class="heatmap-year-nav">
+            <button class="heatmap-year-btn" id="heatmap-year-prev" onclick="heatmapYearNav(-1)">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <span class="heatmap-year-label" id="heatmap-year-label"></span>
+            <button class="heatmap-year-btn" id="heatmap-year-next" onclick="heatmapYearNav(1)">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="heatmap-wrap">
+          <div class="heatmap-months" id="heatmap-months"></div>
+          <div class="heatmap-body">
+            <div class="heatmap-days">
+              <span style="grid-row:2">Mon</span>
+              <span style="grid-row:4">Wed</span>
+              <span style="grid-row:6">Fri</span>
+            </div>
+            <div class="heatmap" id="heatmap-grid"></div>
+          </div>
+        </div>
+        <div class="heatmap-footer">
+          <a class="heatmap-learn" href="#" onclick="return false">Learn how we count activity</a>
+          <div class="heatmap-legend">
+            <span class="heatmap-legend-label">Less</span>
+            <div class="heatmap-legend-cells">
+              <div class="heatmap-cell l0"></div>
+              <div class="heatmap-cell l1"></div>
+              <div class="heatmap-cell l2"></div>
+              <div class="heatmap-cell l3"></div>
+              <div class="heatmap-cell l4"></div>
+            </div>
+            <span class="heatmap-legend-label">More</span>
+          </div>
+        </div>
       </div>
       <div class="chart-card"><div class="chart-card-top"><div class="chart-title">FOCUS TIME (MINUTES)</div><div class="period-tabs"><button class="period-tab" onclick="setPeriod('daily',this)">Daily</button><button class="period-tab active" onclick="setPeriod('weekly',this)">Weekly</button><button class="period-tab" onclick="setPeriod('monthly',this)">Monthly</button></div></div><div class="chart-wrap"><canvas id="chart-time"></canvas></div></div>
       <div class="chart-card"><div class="chart-card-top"><div class="chart-title">GOALS COMPLETED</div></div><div class="chart-wrap"><canvas id="chart-goals"></canvas></div></div>
       <div class="stats-bottom">
-        <div class="card card-p"><div class="section-title" style="margin-bottom:4px">Streak Records</div><div class="streak-row"><div class="streak-row-label">🔥 Current streak</div><div class="streak-row-val" id="st2-streak">0 days</div></div><div class="streak-row"><div class="streak-row-label">📈 Longest streak</div><div class="streak-row-val white" id="st2-longest">0 days</div></div></div>
-        <div class="card card-p"><div class="section-title" style="margin-bottom:4px">Time Breakdown</div><div class="time-breakdown-row"><div class="time-breakdown-label">Today</div><div class="time-breakdown-val" id="tb-today">0m</div></div><div class="time-breakdown-row"><div class="time-breakdown-label">This week</div><div class="time-breakdown-val" id="tb-week">0m</div></div><div class="time-breakdown-row"><div class="time-breakdown-label">This month</div><div class="time-breakdown-val" id="tb-month">0m</div></div><div class="time-breakdown-row"><div class="time-breakdown-label">All time</div><div class="time-breakdown-val" id="tb-all">0m</div></div></div>
+        <div class="card card-p"><div class="section-title">Streak Records</div><div class="streak-row"><div class="streak-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Current streak</div><div class="streak-row-val" id="st2-streak">0 days</div></div><div class="streak-row"><div class="streak-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>Longest streak</div><div class="streak-row-val white" id="st2-longest">0 days</div></div></div>
+        <div class="card card-p"><div class="section-title">Time Breakdown</div><div class="time-breakdown-row"><div class="time-breakdown-label">Today</div><div class="time-breakdown-val" id="tb-today">0m</div></div><div class="time-breakdown-row"><div class="time-breakdown-label">This week</div><div class="time-breakdown-val" id="tb-week">0m</div></div><div class="time-breakdown-row"><div class="time-breakdown-label">This month</div><div class="time-breakdown-val" id="tb-month">0m</div></div><div class="time-breakdown-row"><div class="time-breakdown-label">All time</div><div class="time-breakdown-val" id="tb-all">0m</div></div></div>
       </div>
     </div>
 
+    <!-- Leaderboard -->
     <div id="view-leaderboard" class="view">
-      <div class="page-top-left" style="margin-bottom:24px"><h1 style="font-size:1.6rem;font-weight:700;display:flex;align-items:center;gap:10px">🏆 Leaderboard</h1><p style="color:var(--text2);font-size:.85rem;margin-top:3px">Ranked by streak length and study hours</p></div>
+      <div class="page-top-left" style="margin-bottom:24px"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Leaderboard</h1><p style="color:var(--text2);font-size:.85rem;margin-top:4px">Ranked by streak length and study hours</p></div>
       <div class="lb-podium" id="lb-podium"></div>
       <div class="lb-table"><div class="lb-table-head"><div>#</div><div>USER</div><div>STREAK</div><div>TIME</div><div>GOALS</div></div><div id="lb-rows"></div></div>
     </div>
 
+    <!-- Community -->
     <div id="view-community" class="view">
-      <div class="page-top-left" style="margin-bottom:24px"><h1 style="font-size:1.6rem;font-weight:700;display:flex;align-items:center;gap:10px">👥 Community</h1><p style="color:var(--text2);font-size:.85rem;margin-top:3px">See what others are tracking today</p></div>
+      <div class="page-top-left" style="margin-bottom:24px"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Community</h1><p style="color:var(--text2);font-size:.85rem;margin-top:4px">See what others are tracking today</p></div>
       <div class="community-layout">
         <div><div class="section-label">MEMBERS</div><div class="members-list" id="members-list"></div></div>
-        <div class="community-detail" id="community-detail"><div class="cd-empty"><div class="cd-empty-icon">👥</div><div>Select a user to view their progress</div></div></div>
+        <div class="community-detail" id="community-detail"><div class="cd-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><div>Select a user to view their progress</div></div></div>
       </div>
     </div>
+
+    <!-- Settings -->
+    <div id="view-settings" class="view">
+      <div class="page-top-left" style="margin-bottom:24px"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</h1><p style="color:var(--text2);font-size:.85rem;margin-top:4px">Customize your StudyTrack experience</p></div>
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Pomodoro</h3>
+          <div class="settings-row"><div><div class="settings-row-label">Focus Duration</div><div class="settings-row-sub">Length of focus period</div></div><input class="settings-input" type="number" id="set-focus" value="25" min="1" max="120" onchange="saveSettings()"/><span style="font-size:.8rem;color:var(--text3);margin-left:4px">min</span></div>
+          <div class="settings-row"><div><div class="settings-row-label">Short Break</div><div class="settings-row-sub">Break after a focus session</div></div><input class="settings-input" type="number" id="set-short" value="5" min="1" max="30" onchange="saveSettings()"/><span style="font-size:.8rem;color:var(--text3);margin-left:4px">min</span></div>
+          <div class="settings-row"><div><div class="settings-row-label">Long Break</div><div class="settings-row-sub">Break after 4 focus sessions</div></div><input class="settings-input" type="number" id="set-long" value="15" min="1" max="60" onchange="saveSettings()"/><span style="font-size:.8rem;color:var(--text3);margin-left:4px">min</span></div>
+        </div>
+        <div class="settings-card">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Data</h3>
+          <div class="settings-row"><div><div class="settings-row-label">Export Data</div><div class="settings-row-sub">Download all your data as JSON</div></div><button class="btn-export" onclick="exportData()">Export</button></div>
+          <div class="settings-row"><div><div class="settings-row-label">Reset Data</div><div class="settings-row-sub">Delete all your goals, sessions, and notes</div></div><button class="btn-danger" onclick="resetData()">Reset</button></div>
+        </div>
+      </div>
+    </div>
+
   </main>
   </div>
+
   <!-- Mobile Bottom Navigation -->
   <div class="mobile-bottom-nav">
     <div class="mobile-nav-items">
-      <button class="mob-nav-item active" data-view="dashboard" onclick="showView('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>Home</span></button>
+      <button class="mob-nav-item active" data-view="dashboard" onclick="showView('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Home</span></button>
       <button class="mob-nav-item" data-view="goals" onclick="showView('goals')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span>Goals</span></button>
       <button class="mob-nav-item" data-view="sessions" onclick="showView('sessions')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Timer</span></button>
       <button class="mob-nav-item" data-view="notes" onclick="showView('notes')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span>Notes</span></button>
@@ -490,504 +331,47 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<div class="overlay" id="modal-goal" onclick="if(event.target===this)closeModal('modal-goal')"><div class="modal"><div class="modal-title">Add Goal<button class="modal-close" onclick="closeModal('modal-goal')">✕</button></div><div class="modal-field"><label>Goal Description</label><input type="text" id="goal-text" placeholder="What do you want to achieve today?" onkeydown="if(event.key==='Enter')addGoal()"/></div><div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-goal')">Cancel</button><button class="btn-modal-submit" onclick="addGoal()">Add Goal</button></div></div></div>
-<div class="overlay" id="modal-note" onclick="if(event.target===this)closeModal('modal-note')"><div class="modal"><div class="modal-title">Add Note<button class="modal-close" onclick="closeModal('modal-note')">✕</button></div><div class="modal-field"><label>Mood</label><div class="mood-options"><button class="mood-opt active" onclick="selectMood(this,'Good')">Good</button><button class="mood-opt" onclick="selectMood(this,'Great')">Great</button><button class="mood-opt" onclick="selectMood(this,'Okay')">Okay</button><button class="mood-opt" onclick="selectMood(this,'Tired')">Tired</button><button class="mood-opt" onclick="selectMood(this,'Stressed')">Stressed</button></div></div><div class="modal-field"><label>Note</label><textarea id="note-text" placeholder="Write your thoughts…"></textarea></div><div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-note')">Cancel</button><button class="btn-modal-submit" onclick="addNote()">Save Note</button></div></div></div>
-<div class="overlay" id="modal-event" onclick="if(event.target===this)closeModal('modal-event')"><div class="modal"><div class="modal-title">Add Event<button class="modal-close" onclick="closeModal('modal-event')">✕</button></div><div class="modal-field"><label>Event Title</label><input type="text" id="event-title" placeholder="e.g. Study session, Exam…"/></div><div class="modal-field"><label>Date</label><input type="date" id="event-date"/></div><div class="modal-field"><label>Time (optional)</label><input type="time" id="event-time"/></div><div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-event')">Cancel</button><button class="btn-modal-submit" onclick="addEvent()">Add Event</button></div></div></div>
-<div class="overlay" id="modal-profile" onclick="if(event.target===this)closeModal('modal-profile')"><div class="modal"><div class="modal-title">My Profile<button class="modal-close" onclick="closeModal('modal-profile')">✕</button></div><div class="modal-field"><label>Display Name</label><input type="text" id="profile-name" placeholder="Your display name"/></div><div class="modal-field"><label>Username</label><input type="text" id="profile-username" placeholder="Choose a unique username" onkeydown="if(event.key===' ')event.preventDefault()"/><div style="font-size:0.7rem;color:var(--text3);margin-top:4px">Letters, numbers, underscores only. This is your public handle.</div></div><div class="modal-field"><label>Email</label><input type="email" id="profile-email" disabled style="opacity:0.5;cursor:not-allowed"/><div style="font-size:0.7rem;color:var(--text3);margin-top:4px">Email cannot be changed here.</div></div><div style="height:1px;background:var(--border);margin:18px 0"></div><div class="modal-field"><label>Current Password</label><input type="password" id="profile-current-pass" placeholder="Enter current password"/></div><div class="modal-field"><label>New Password</label><input type="password" id="profile-new-pass" placeholder="Min 6 characters"/></div><div class="modal-field"><label>Confirm New Password</label><input type="password" id="profile-confirm-pass" placeholder="Re-enter new password"/></div><div id="profile-err" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:9px 12px;color:#f87171;font-size:0.78rem;margin-bottom:12px;display:none"></div><div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-profile')">Cancel</button><button class="btn-modal-submit" onclick="saveProfile()">Save Changes</button></div></div></div>
+<!-- ═══ MODALS ═══ -->
+<div class="overlay" id="modal-goal" onclick="if(event.target===this)closeModal('modal-goal')"><div class="modal"><div class="modal-title">Add Goal<button class="modal-close" onclick="closeModal('modal-goal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-field"><label>Goal Description</label><input type="text" id="goal-text" placeholder="What do you want to achieve today?" onkeydown="if(event.key==='Enter')addGoal()"/></div><div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-goal')">Cancel</button><button class="btn-modal-submit" onclick="addGoal()">Add Goal</button></div></div></div>
+
+<div class="overlay" id="modal-note" onclick="if(event.target===this)closeModal('modal-note')"><div class="modal"><div class="modal-title">Add Note<button class="modal-close" onclick="closeModal('modal-note')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-field"><label>Mood</label><div class="mood-options"><button class="mood-opt active" onclick="selectMood(this,'Good')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Good</button><button class="mood-opt" onclick="selectMood(this,'Great')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Great</button><button class="mood-opt" onclick="selectMood(this,'Okay')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Okay</button><button class="mood-opt" onclick="selectMood(this,'Tired')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 10s-1.5-1-4-1-4 1-4 1"/><line x1="10" y1="15" x2="14" y2="15"/></svg>Tired</button><button class="mood-opt" onclick="selectMood(this,'Stressed')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><path d="M9 9h.01"/><path d="M15 9h.01"/></svg>Stressed</button></div></div><div class="modal-field"><label>Note</label><textarea id="note-text" placeholder="Write your thoughts..."></textarea></div><div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-note')">Cancel</button><button class="btn-modal-submit" onclick="addNote()">Save Note</button></div></div></div>
+
+<div class="overlay" id="modal-event" onclick="if(event.target===this)closeModal('modal-event')"><div class="modal"><div class="modal-title">Add Event<button class="modal-close" onclick="closeModal('modal-event')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-field"><label>Event Title</label><input type="text" id="event-title" placeholder="e.g. Study session, Exam..."/></div><div class="modal-field"><label>Date</label><input type="date" id="event-date"/></div><div class="modal-field"><label>Time (optional)</label><input type="time" id="event-time"/></div><div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-event')">Cancel</button><button class="btn-modal-submit" onclick="addEvent()">Add Event</button></div></div></div>
+
+<div class="overlay" id="modal-profile" onclick="if(event.target===this)closeModal('modal-profile')"><div class="modal"><div class="modal-title">My Profile<button class="modal-close" onclick="closeModal('modal-profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-field"><label>Display Name</label><input type="text" id="profile-name" placeholder="Your display name"/></div><div class="modal-field"><label>Username</label><input type="text" id="profile-username" placeholder="Choose a unique username" onkeydown="if(event.key===' ')event.preventDefault()"/><div style="font-size:0.7rem;color:var(--text3);margin-top:4px">Letters, numbers, underscores only. This is your public handle.</div></div><div class="modal-field"><label>Email</label><input type="email" id="profile-email" disabled style="opacity:0.5;cursor:not-allowed"/><div style="font-size:0.7rem;color:var(--text3);margin-top:4px">Email cannot be changed here.</div></div><div style="height:1px;background:var(--border);margin:18px 0"></div><div class="modal-field"><label>Current Password</label><input type="password" id="profile-current-pass" placeholder="Enter current password"/></div><div class="modal-field"><label>New Password</label><input type="password" id="profile-new-pass" placeholder="Min 6 characters"/></div><div class="modal-field"><label>Confirm New Password</label><input type="password" id="profile-confirm-pass" placeholder="Re-enter new password"/></div><div id="profile-err" style="background:var(--red-dim);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:9px 12px;color:var(--red);font-size:0.78rem;margin-bottom:12px;display:none"></div><div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-profile')">Cancel</button><button class="btn-modal-submit" onclick="saveProfile()">Save Changes</button></div></div></div>
+
+<!-- ═══ COMMAND PALETTE ═══ -->
+<div class="cmd-overlay" id="cmd-palette" onclick="if(event.target===this)closeCmdPalette()">
+  <div class="cmd-box">
+    <div class="cmd-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="cmd-input" id="cmd-input" placeholder="Type a command or search..." oninput="filterCommands()" onkeydown="cmdKeyDown(event)"/></div>
+    <div class="cmd-results" id="cmd-results"></div>
+  </div>
+</div>
+
+<!-- ═══ FOCUS MODE OVERLAY ═══ -->
+<div class="focus-overlay" id="focus-overlay">
+  <div class="focus-ring-wrap">
+    <svg class="focus-ring-svg" viewBox="0 0 300 300">
+      <circle class="focus-ring-bg" cx="150" cy="150" r="132"/>
+      <circle class="focus-ring-fg" id="focus-ring-fg" cx="150" cy="150" r="132" stroke-dasharray="829" stroke-dashoffset="0"/>
+    </svg>
+    <div class="focus-ring-center">
+      <div class="focus-time" id="focus-time">25:00</div>
+      <div class="focus-label" id="focus-label">Focus</div>
+    </div>
+  </div>
+  <div class="ambient-bar" id="focus-ambient-bar" style="margin-top:0">
+    <button class="ambient-btn" data-sound="rain" onclick="toggleAmbient('rain',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6l3.5 3.5"/><circle cx="12" cy="14" r="8"/></svg>Rain</button>
+    <button class="ambient-btn" data-sound="waves" onclick="toggleAmbient('waves',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2s2.5 2 2.5 2"/></svg>Waves</button>
+    <button class="ambient-btn" data-sound="wind" onclick="toggleAmbient('wind',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2"/></svg>Wind</button>
+    <button class="ambient-btn" data-sound="brown" onclick="toggleAmbient('brown',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 4 18 3-9h6"/></svg>Brown</button>
+  </div>
+  <div class="focus-hint"><span><kbd>Space</kbd> Play/Pause</span><span><kbd>Esc</kbd> Exit</span></div>
+</div>
+
+<!-- Toasts -->
 <div id="toast-wrap"></div>
 
-<script>
-// ══════════════════════════════════════════════
-//  SUPABASE CONFIG
-// ══════════════════════════════════════════════
-const SUPABASE_URL = 'https://gimzumqhongsksvvjqnr.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpbXp1bXFob25nc2tzdnZqcW5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyMzM4NDgsImV4cCI6MjA5MzgwOTg0OH0.I1MMkElg2ahLi8NQffBf0Du7qjIzzhDAEiilXc2mfOA';
-
-let sb;
-try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON); } catch(e) { console.error('Supabase init failed:', e); document.getElementById('auth-err').textContent='Failed to connect to Supabase. Check your credentials.'; document.getElementById('auth-err').style.display='block'; }
-
-// ── State ──────────────────────────────────────
-let CU = null, UP = null;
-let timerInt = null, clockInTime = null, clockInLabel = '';
-let goalDate = todayStr(), sessDate = todayStr(), noteDate = todayStr();
-let calYear, calMonth, calSelDate;
-let statPeriod = 'weekly';
-let chartTime = null, chartGoals = null;
-let selectedMood = 'Good';
-let dbReady = false;
-
-// ── Helpers ────────────────────────────────────
-function todayStr(){const d=new Date();return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`}
-function p2(n){return String(n).padStart(2,'0')}
-function dateShift(str,n){const d=new Date(str+'T12:00:00');d.setDate(d.getDate()+n);return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`}
-function fmtDur(m){if(m<1)return'0m';const h=Math.floor(m/60),mn=Math.floor(m%60);return h?`${h}h ${mn}m`:`${mn}m`}
-function fmtTime(ts){if(!ts)return'';const d=new Date(ts);return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
-function fmtRelative(ts){if(!ts)return'';const diff=Math.floor((Date.now()-new Date(ts).getTime())/1000);if(diff<60)return'just now';if(diff<3600)return`${Math.floor(diff/60)}m ago`;if(diff<86400)return`${Math.floor(diff/3600)}h ago`;return new Date(ts).toLocaleDateString()}
-function fmtDayName(str){const[y,m,d]=str.split('-').map(Number);return new Date(y,m-1,d).toLocaleDateString([],{weekday:'long'})}
-function avatarBg(uid){const c=['#f97316','#3b82f6','#22c55e','#a855f7','#ef4444','#06b6d4','#ec4899'];return c[(uid||'').charCodeAt(0)%c.length]}
-function initials(name){return(name||'?').charAt(0).toUpperCase()}
-function uid(){return CU?CU.id:null}
-
-function toast(msg,type='ok'){const el=document.createElement('div');el.className=`toast ${type}`;el.innerHTML=`<span>${type==='ok'?'✓':'✕'}</span><span>${msg}</span>`;document.getElementById('toast-wrap').appendChild(el);setTimeout(()=>el.remove(),3500)}
-
-function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('view-'+id).classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.view===id));document.querySelectorAll('.mob-nav-item').forEach(n=>n.classList.toggle('active',n.dataset.view===id));if(id==='calendar')renderCalendar();if(id==='stats')renderStats();if(id==='leaderboard')renderLeaderboard();if(id==='community')renderCommunity()}
-function openModal(id){document.getElementById(id).classList.add('open')}
-function closeModal(id){document.getElementById(id).classList.remove('open')}
-
-// ── Database Setup ─────────────────────────────
-async function checkDatabase(){
-  try{const{error}=await sb.from('profiles').select('id').limit(1);if(error&&error.code==='PGRST205'){dbReady=false;document.getElementById('setup-banner').style.display='block';}else{dbReady=true;document.getElementById('setup-banner').style.display='none';}}catch(e){dbReady=false;document.getElementById('setup-banner').style.display='block';}
-}
-
-async function setupDatabase(){
-  const SQL=`
-CREATE TABLE IF NOT EXISTS profiles (id TEXT PRIMARY KEY, display_name TEXT, username TEXT UNIQUE, email TEXT, current_streak INT DEFAULT 0, longest_streak INT DEFAULT 0, last_streak_date TEXT DEFAULT '', total_study_minutes INT DEFAULT 0, today_study_minutes INT DEFAULT 0, week_study_minutes INT DEFAULT 0, month_study_minutes INT DEFAULT 0, total_goals_completed INT DEFAULT 0, total_goals_added INT DEFAULT 0, last_active_date TEXT DEFAULT '', active_session JSONB, created_at TIMESTAMPTZ DEFAULT now());
-CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_username ON profiles(username) WHERE username IS NOT NULL;
-CREATE TABLE IF NOT EXISTS goals (id TEXT PRIMARY KEY, user_id TEXT REFERENCES profiles(id) ON DELETE CASCADE, date TEXT NOT NULL, text TEXT NOT NULL, completed BOOLEAN DEFAULT false, created_at TIMESTAMPTZ DEFAULT now());
-CREATE TABLE IF NOT EXISTS sessions (id TEXT PRIMARY KEY, user_id TEXT REFERENCES profiles(id) ON DELETE CASCADE, date TEXT NOT NULL, clock_in TIMESTAMPTZ, clock_out TIMESTAMPTZ, duration_minutes INT DEFAULT 0, label TEXT DEFAULT 'Study session', created_at TIMESTAMPTZ DEFAULT now());
-CREATE TABLE IF NOT EXISTS notes (id TEXT PRIMARY KEY, user_id TEXT REFERENCES profiles(id) ON DELETE CASCADE, date TEXT NOT NULL, content TEXT NOT NULL, mood TEXT DEFAULT 'Good', created_at TIMESTAMPTZ DEFAULT now());
-CREATE TABLE IF NOT EXISTS events (id TEXT PRIMARY KEY, user_id TEXT REFERENCES profiles(id) ON DELETE CASCADE, title TEXT NOT NULL, date TEXT NOT NULL, time TEXT, created_at TIMESTAMPTZ DEFAULT now());
-CREATE TABLE IF NOT EXISTS activity (id TEXT PRIMARY KEY, user_id TEXT, display_name TEXT, username TEXT, type TEXT, detail TEXT, created_at TIMESTAMPTZ DEFAULT now());
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY; ALTER TABLE goals ENABLE ROW LEVEL SECURITY; ALTER TABLE sessions ENABLE ROW LEVEL SECURITY; ALTER TABLE notes ENABLE ROW LEVEL SECURITY; ALTER TABLE events ENABLE ROW LEVEL SECURITY; ALTER TABLE activity ENABLE ROW LEVEL SECURITY;
-DO $$ BEGIN
-CREATE POLICY "profiles_all" ON profiles FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "goals_all" ON goals FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "sessions_all" ON sessions FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "notes_all" ON notes FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "events_all" ON events FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "activity_all" ON activity FOR ALL USING (true) WITH CHECK (true);
-EXCEPTION WHEN duplicate_object THEN NULL;
-END $$;
-CREATE INDEX IF NOT EXISTS idx_goals_user_date ON goals(user_id, date);
-CREATE INDEX IF NOT EXISTS idx_sessions_user_date ON sessions(user_id, date);
-CREATE INDEX IF NOT EXISTS idx_notes_user_date ON notes(user_id, date);
-CREATE INDEX IF NOT EXISTS idx_events_user_date ON events(user_id, date);
-CREATE INDEX IF NOT EXISTS idx_activity_created ON activity(created_at DESC);
-`;
-  toast('Setting up database... Please run the SQL in your Supabase Dashboard > SQL Editor. Opening instructions...','ok');
-  const sqlBlob=new Blob([SQL],{type:'text/plain'});
-  const url=URL.createObjectURL(sqlBlob);
-  const a=document.createElement('a');a.href=url;a.download='supabase_setup.sql';a.click();
-  URL.revokeObjectURL(url);
-  window.open('https://supabase.com/dashboard/project/gimzumqhongsksvvjqnr/sql/new','_blank');
-}
-
-// ── Auth ───────────────────────────────────────
-function switchTab(tab){document.querySelectorAll('.auth-tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='login')||(i===1&&tab==='register')));document.getElementById('form-login').style.display=tab==='login'?'block':'none';document.getElementById('form-register').style.display=tab==='register'?'block':'none';document.getElementById('auth-err').style.display='none'}
-function showErr(m){const e=document.getElementById('auth-err');e.textContent=m;e.style.display='block'}
-
-async function loginEmail(){
-  const em=document.getElementById('l-email').value.trim(),ps=document.getElementById('l-pass').value;
-  if(!em||!ps){showErr('Fill in all fields');return}
-  document.getElementById('l-btn').disabled=true;
-  const{data,error}=await sb.auth.signInWithPassword({email:em,password:ps});
-  document.getElementById('l-btn').disabled=false;
-  if(error){showErr(error.message);return}
-  CU={id:data.user.id,displayName:data.user.user_metadata?.display_name||data.user.email,email:data.user.email};
-  showPage('page-app');loadApp();
-}
-
-async function registerEmail(){
-  const nm=document.getElementById('r-name').value.trim(),un=document.getElementById('r-username').value.trim().replace(/[^a-zA-Z0-9_]/g,''),em=document.getElementById('r-email').value.trim(),ps=document.getElementById('r-pass').value;
-  if(!nm||!em||!ps){showErr('Fill in all fields');return}
-  if(ps.length<6){showErr('Password must be at least 6 characters');return}
-  if(un&&un.length<3){showErr('Username must be at least 3 characters');return}
-  // Check username uniqueness before signing up
-  if(un){
-    const{data:existing}=await sb.from('profiles').select('id').eq('username',un).limit(1);
-    if(existing&&existing.length>0){showErr('Username is already taken. Try another.');return}
-  }
-  document.getElementById('r-btn').disabled=true;
-  const{data,error}=await sb.auth.signUp({email:em,password:ps,options:{data:{display_name:nm}}});
-  document.getElementById('r-btn').disabled=false;
-  if(error){showErr(error.message);return}
-  // Auto-confirm for demo - create profile
-  const userId=data.user?.id||data.session?.user?.id;
-  if(userId){
-    const profileData={id:userId,display_name:nm,email:em};
-    if(un)profileData.username=un;
-    await sb.from('profiles').insert(profileData);
-    CU={id:userId,displayName:nm,email:em};
-    showPage('page-app');loadApp();
-    toast('Account created! Welcome '+nm);
-  }else{
-    showErr('Check your email to confirm your account, then sign in.');
-  }
-}
-
-async function loginDemo(){
-  const demoEmail='demo@studytrack.com',demoPass='demo123456';
-  // Try sign in first
-  let{data,error}=await sb.auth.signInWithPassword({email:demoEmail,password:demoPass});
-  if(error){
-    // Create demo account
-    const reg=await sb.auth.signUp({email:demoEmail,password:demoPass,options:{data:{display_name:'Demo User'}}});
-    if(reg.error){toast('Could not create demo account: '+reg.error.message,'err');return}
-    const userId=reg.data.user?.id||reg.data.session?.user?.id;
-    if(userId){
-      await sb.from('profiles').insert({id:userId,display_name:'Demo User',email:demoEmail,current_streak:2,longest_streak:2,last_streak_date:todayStr(),total_study_minutes:195,today_study_minutes:90,week_study_minutes:195,month_study_minutes:195,total_goals_completed:3,total_goals_added:5,last_active_date:todayStr()});
-      // Demo goals
-      const today=todayStr(),yesterday=dateShift(today,-1);
-      await sb.from('goals').insert([{id:'g1',user_id:userId,date:today,text:'Complete Chapter 5 exercises',completed:true},{id:'g2',user_id:userId,date:today,text:'Review lecture notes',completed:false},{id:'g3',user_id:userId,date:today,text:'Practice coding problems',completed:false},{id:'g4',user_id:userId,date:yesterday,text:'Read textbook section 4.3',completed:true},{id:'g5',user_id:userId,date:yesterday,text:'Work on assignment draft',completed:true}]);
-      // Demo sessions
-      await sb.from('sessions').insert([{id:'s1',user_id:userId,date:today,clock_in:new Date(today+'T09:00:00').toISOString(),clock_out:new Date(today+'T10:30:00').toISOString(),duration_minutes:90,label:'Morning Study'},{id:'s2',user_id:userId,date:yesterday,clock_in:new Date(yesterday+'T14:00:00').toISOString(),clock_out:new Date(yesterday+'T15:45:00').toISOString(),duration_minutes:105,label:'Afternoon Review'}]);
-      // Demo events
-      await sb.from('events').insert([{id:'e1',user_id:userId,title:'Study Group',date:today,time:'15:00'},{id:'e2',user_id:userId,title:'Exam Prep',date:dateShift(today,2),time:'10:00'}]);
-      // Demo notes
-      await sb.from('notes').insert([{id:'n1',user_id:userId,date:today,content:'Reviewed key concepts from Chapter 5. Need to focus more on differential equations.',mood:'Good',created_at:new Date(today+'T10:30:00').toISOString()},{id:'n2',user_id:userId,date:yesterday,content:'Feeling productive today. Completed the assignment draft ahead of schedule.',mood:'Great',created_at:new Date(yesterday+'T15:45:00').toISOString()}]);
-      // Demo activity
-      await sb.from('activity').insert([{id:'a1',user_id:userId,display_name:'Demo User',username:'demo',type:'clockin',detail:'Clocked in',created_at:new Date(today+'T09:00:00').toISOString()},{id:'a2',user_id:userId,display_name:'Demo User',username:'demo',type:'clockout',detail:'Clocked out after 1h 30m',created_at:new Date(today+'T10:30:00').toISOString()},{id:'a3',user_id:userId,display_name:'Demo User',username:'demo',type:'goal',detail:'Completed: Complete Chapter 5 exercises',created_at:new Date(today+'T11:00:00').toISOString()}]);
-      CU={id:userId,displayName:'Demo User',email:demoEmail};
-      showPage('page-app');loadApp();toast('Welcome, Demo User!');
-    }
-  }else{
-    const userId=data.user.id;
-    CU={id:userId,displayName:data.user.user_metadata?.display_name||'Demo User',email:data.user.email};
-    showPage('page-app');loadApp();toast('Welcome back, Demo User!');
-  }
-}
-
-async function logout(){
-  if(clockInTime){if(!confirm('You are clocked in. Clock out and sign out?'))return;await clockOut();}
-  await sb.auth.signOut();
-  CU=null;UP=null;stopTimer();showPage('page-auth');
-}
-
-// Listen for auth state changes
-if(sb) sb.auth.onAuthStateChange(async(event,session)=>{
-  if(session?.user){
-    CU={id:session.user.id,displayName:session.user.user_metadata?.display_name||session.user.email,email:session.user.email};
-    showPage('page-app');loadApp();
-  }else if(!CU){
-    showPage('page-auth');
-  }
-});
-
-// ── Load App ───────────────────────────────────
-async function loadApp(){
-  await checkDatabase();
-  const{data}=await sb.from('profiles').select('*').eq('id',uid()).single();
-  UP=data||{id:uid(),display_name:CU.displayName,email:CU.email,username:null,current_streak:0,longest_streak:0,last_streak_date:'',total_study_minutes:0,today_study_minutes:0,week_study_minutes:0,month_study_minutes:0,total_goals_completed:0,total_goals_added:0,last_active_date:'',active_session:null};
-  if(!data){await sb.from('profiles').insert({id:uid(),display_name:CU.displayName,email:CU.email,username:null});}
-  if(UP.active_session?.clockIn){clockInTime=new Date(UP.active_session.clockIn).getTime();clockInLabel=UP.active_session.label||'';}
-  setGreeting();updateClockUI();updateDashStats();
-  updateGoalsDateUI();updateSessDateUI();updateNotesDateUI();
-  const n=new Date();calYear=n.getFullYear();calMonth=n.getMonth();calSelDate=todayStr();
-  document.getElementById('event-date').value=todayStr();
-  renderDashGoals();renderActivity();renderSessList();renderNotesList();
-}
-
-function setGreeting(){
-  const h=new Date().getHours();const g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
-  document.getElementById('d-greeting').textContent=`${g}, ${CU.displayName?.split(' ')[0]||'there'}`;
-  document.getElementById('d-date').textContent=new Date().toLocaleDateString([],{weekday:'long',month:'long',day:'numeric',year:'numeric'});
-  document.getElementById('sb-name').textContent=CU.displayName||'User';
-  const un=UP?.username;if(un)document.getElementById('sb-username').textContent='@'+un;else document.getElementById('sb-username').textContent='No username set';
-  document.getElementById('sb-email').textContent='';
-  const av=document.getElementById('sb-avatar');av.style.background=avatarBg(CU.id);av.textContent=initials(CU.displayName);
-  const mobAv=document.getElementById('mob-profile-btn');if(mobAv){mobAv.style.background=avatarBg(CU.id);mobAv.textContent=initials(CU.displayName);}
-}
-
-function openProfileModal(){
-  document.getElementById('profile-name').value=CU.displayName||'';
-  document.getElementById('profile-username').value=UP?.username||'';
-  document.getElementById('profile-email').value=CU.email||'';
-  document.getElementById('profile-current-pass').value='';
-  document.getElementById('profile-new-pass').value='';
-  document.getElementById('profile-confirm-pass').value='';
-  document.getElementById('profile-err').style.display='none';
-  openModal('modal-profile');
-}
-
-async function saveProfile(){
-  const errEl=document.getElementById('profile-err');errEl.style.display='none';
-  const newName=document.getElementById('profile-name').value.trim();
-  const newUsername=document.getElementById('profile-username').value.trim().replace(/[^a-zA-Z0-9_]/g,'');
-  const currentPass=document.getElementById('profile-current-pass').value;
-  const newPass=document.getElementById('profile-new-pass').value;
-  const confirmPass=document.getElementById('profile-confirm-pass').value;
-
-  if(!newName){errEl.textContent='Display name is required.';errEl.style.display='block';return}
-
-  // Validate username format
-  if(newUsername&&newUsername.length<3){errEl.textContent='Username must be at least 3 characters.';errEl.style.display='block';return}
-
-  // Check username uniqueness
-  if(newUsername&&newUsername!==(UP?.username||'')){
-    const{data:existing}=await sb.from('profiles').select('id').eq('username',newUsername).limit(1);
-    if(existing&&existing.length>0){errEl.textContent='Username is already taken. Try another.';errEl.style.display='block';return}
-  }
-
-  // Change password if fields are filled
-  if(currentPass||newPass||confirmPass){
-    if(!currentPass){errEl.textContent='Enter your current password to change it.';errEl.style.display='block';return}
-    if(newPass.length<6){errEl.textContent='New password must be at least 6 characters.';errEl.style.display='block';return}
-    if(newPass!==confirmPass){errEl.textContent='New passwords do not match.';errEl.style.display='block';return}
-    // Re-authenticate then update password
-    const{error:reAuthErr}=await sb.auth.signInWithPassword({email:CU.email,password:currentPass});
-    if(reAuthErr){errEl.textContent='Current password is incorrect.';errEl.style.display='block';return}
-    const{error:passErr}=await sb.auth.updateUser({password:newPass});
-    if(passErr){errEl.textContent='Password update failed: '+passErr.message;errEl.style.display='block';return}
-  }
-
-  // Update profile in Supabase
-  const updates={display_name:newName};
-  if(newUsername)updates.username=newUsername;
-  else updates.username=null;
-  await sb.from('profiles').update(updates).eq('id',uid());
-
-  // Update auth metadata too
-  await sb.auth.updateUser({data:{display_name:newName}});
-
-  // Update local state
-  CU.displayName=newName;
-  if(UP){UP.display_name=newName;UP.username=newUsername||null;}
-
-  setGreeting();
-  closeModal('modal-profile');
-  toast('Profile updated ✓');
-}
-
-function updateDashStats(){
-  if(!UP)return;
-  document.getElementById('d-streak-badge').textContent=`${UP.current_streak||0} day streak`;
-  let todayMin=UP.today_study_minutes||0;
-  if(clockInTime)todayMin+=Math.floor((Date.now()-clockInTime)/60000);
-  document.getElementById('d-today-val').textContent=fmtDur(todayMin);
-  document.getElementById('d-week-val').textContent=fmtDur(UP.week_study_minutes||0);
-  const rate=UP.total_goals_added>0?Math.round((UP.total_goals_completed/UP.total_goals_added)*100):0;
-  document.getElementById('d-rate-val').textContent=`${rate}%`;
-}
-
-function updateClockUI(){
-  const label=document.getElementById('d-clock-label'),title=document.getElementById('d-clock-title'),timer=document.getElementById('d-timer'),btn=document.getElementById('d-clock-btn');
-  const sessIcon=document.getElementById('sess-icon'),sessTitle=document.getElementById('sess-title'),sessSub=document.getElementById('sess-sub'),sessBtn=document.getElementById('sess-btn'),sessTimer=document.getElementById('sess-timer'),sessLabelIdle=document.getElementById('sess-label-input-idle'),sessLabelActive=document.getElementById('sess-label');
-  if(clockInTime){
-    label.textContent='CURRENTLY STUDYING';title.textContent=clockInLabel||'Study session';timer.style.display='block';stopTimer();startTimer(clockInTime);
-    btn.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Clock Out`;btn.classList.add('btn-clock-out');
-    sessIcon.textContent='⏱';sessTitle.textContent='Clocked in';sessSub.textContent=`Started at ${fmtTime(clockInTime)}`;sessTimer.style.display='block';
-    sessBtn.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Clock Out`;
-    sessLabelIdle.style.display='none';sessLabelActive.style.display='block';sessLabelActive.value=clockInLabel||'';
-  }else{
-    label.textContent='READY TO FOCUS?';title.textContent='Start your session';timer.style.display='none';stopTimer();document.getElementById('d-timer').textContent='00:00:00';
-    btn.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg> Clock In`;btn.classList.remove('btn-clock-out');
-    sessIcon.textContent='🕐';sessTitle.textContent='Not clocked in';sessSub.textContent='Start a session to track your focus time';sessTimer.style.display='none';
-    sessBtn.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg> Clock In`;
-    sessLabelIdle.style.display='block';sessLabelActive.style.display='none';document.getElementById('sess-timer').textContent='00:00:00';
-  }
-}
-
-function startTimer(ts){stopTimer();timerInt=setInterval(()=>{const el=Math.max(0,Date.now()-ts);const h=Math.floor(el/3600000),m=Math.floor((el%3600000)/60000),s=Math.floor((el%60000)/1000);const t=`${p2(h)}:${p2(m)}:${p2(s)}`;document.getElementById('d-timer').textContent=t;document.getElementById('sess-timer').textContent=t;},1000)}
-function stopTimer(){clearInterval(timerInt);timerInt=null}
-
-async function toggleClockDash(){await toggleClock()}
-async function toggleClockSess(){await toggleClock()}
-async function toggleClock(){if(clockInTime)await clockOut();else await clockIn()}
-async function clockIn(){
-  clockInLabel=document.getElementById('sess-label-input-idle').value.trim()||'Study session';clockInTime=Date.now();
-  const today=todayStr();const updates={active_session:{clockIn:new Date(clockInTime).toISOString(),label:clockInLabel},last_active_date:today};
-  if(UP.last_active_date!==today)updates.today_study_minutes=0;
-  await sb.from('profiles').update(updates).eq('id',uid());
-  await sb.from('activity').insert({id:'act_'+Date.now(),user_id:uid(),display_name:CU.displayName,username:UP?.username||null,type:'clockin',detail:'Clocked in'});
-  updateClockUI();renderActivity();toast('Clocked in! Focus up 💪');
-}
-async function clockOut(){
-  if(!clockInTime)return;const clockOutTime=Date.now();const dur=Math.max(1,Math.floor((clockOutTime-clockInTime)/60000));
-  const today=todayStr(),yest=dateShift(today,-1);
-  let streak=1;if(UP.last_streak_date===yest||UP.last_streak_date===today){streak=UP.last_streak_date===today?UP.current_streak:(UP.current_streak||0)+1}
-  const longest=Math.max(streak,UP.longest_streak||0);
-  const updates={active_session:null,today_study_minutes:(UP.today_study_minutes||0)+dur,total_study_minutes:(UP.total_study_minutes||0)+dur,week_study_minutes:(UP.week_study_minutes||0)+dur,month_study_minutes:(UP.month_study_minutes||0)+dur,current_streak:streak,longest_streak:longest,last_streak_date:today,last_active_date:today};
-  await sb.from('profiles').update(updates).eq('id',uid());
-  Object.assign(UP,updates);
-  await sb.from('sessions').insert({id:'sess_'+Date.now(),user_id:uid(),date:today,clock_in:new Date(clockInTime).toISOString(),clock_out:new Date(clockOutTime).toISOString(),duration_minutes:dur,label:clockInLabel||'Study session'});
-  await sb.from('activity').insert({id:'act_'+Date.now(),user_id:uid(),display_name:CU.displayName,username:UP?.username||null,type:'clockout',detail:`Clocked out after ${fmtDur(dur)}`});
-  document.getElementById('sess-label-input-idle').value='';clockInTime=null;clockInLabel='';
-  updateClockUI();updateDashStats();renderSessList();renderActivity();toast(`Session saved: ${fmtDur(dur)} 🎉`);
-}
-
-// ── Activity ───────────────────────────────────
-async function renderActivity(){
-  const{data}=await sb.from('activity').select('*').order('created_at',{ascending:false}).limit(10);
-  const el=document.getElementById('d-activity-list');
-  if(!data||!data.length){el.innerHTML='<div class="goal-empty">No activity yet</div>';return}
-  const iconMap={clockin:'clockin',clockout:'clockout',note:'note',goal:'goal'};const emoMap={clockin:'▶',clockout:'⏹',note:'📝',goal:'✓'};
-  el.innerHTML=data.map(a=>{const isMe=a.user_id===uid();const showName=isMe?(a.display_name||'User'):(a.username?'@'+a.username:(a.display_name||'User'));return `<div class="activity-item"><div class="activity-icon ${iconMap[a.type]||'note'}">${emoMap[a.type]||'•'}</div><div class="activity-text"><div><strong>${showName}</strong> <span>${a.detail||''}</span></div><div class="activity-time">${fmtRelative(a.created_at)}</div></div></div>`}).join('');
-}
-
-// ── Goals ──────────────────────────────────────
-function updateGoalsDateUI(){
-  const d=goalDate,today=todayStr();const ms=['January','February','March','April','May','June','July','August','September','October','November','December'];const dl=d.split('-');
-  document.getElementById('goals-date-label').textContent=fmtDayName(d);document.getElementById('goals-date-sub').textContent=`${ms[parseInt(dl[1])-1]} ${parseInt(dl[2])}, ${dl[0]}`;
-  document.getElementById('goals-today-btn').style.display=d===today?'none':'block';renderGoalsPage();
-}
-function goalDateNav(n){goalDate=dateShift(goalDate,n);updateGoalsDateUI()}
-function goalGoToday(){goalDate=todayStr();updateGoalsDateUI()}
-
-async function renderDashGoals(){
-  const{data}=await sb.from('goals').select('*').eq('user_id',uid()).eq('date',todayStr());
-  const items=data||[];const el=document.getElementById('d-goal-list');const done=items.filter(g=>g.completed).length;
-  document.getElementById('d-goals-val').textContent=`${done}/${items.length}`;document.getElementById('d-goals-sub').textContent=items.length?`${done} completed`:'No goals yet';
-  if(!items.length){el.innerHTML='<div class="goal-empty">No goals for today. <a href="#" onclick="showView(\'goals\');return false">Add one</a></div>';return}
-  el.innerHTML=items.slice(0,5).map(g=>`<div class="goal-mini"><button class="goal-check-btn ${g.completed?'done':''}" onclick="toggleGoal('${g.id}')">${g.completed?'✓':''}</button><div class="goal-mini-text ${g.completed?'done':''}">${g.text}</div></div>`).join('');
-}
-
-async function renderGoalsPage(){
-  const{data}=await sb.from('goals').select('*').eq('user_id',uid()).eq('date',goalDate);
-  const items=data||[];const el=document.getElementById('goals-list-wrap');
-  if(!items.length){el.innerHTML='<div class="goals-empty"><div class="e-icon">🎯</div>No goals for this day<br><small style="color:var(--text3)">Add your first goal to get started</small></div>';return}
-  el.innerHTML=`<div class="goal-list">${items.map(g=>`<div class="goal-card ${g.completed?'done':''}"><div class="check-circle ${g.completed?'done':''}" onclick="toggleGoal('${g.id}')">${g.completed?'✓':''}</div><div class="goal-card-text ${g.completed?'done':''}">${g.text}</div><div class="goal-card-actions"><button class="goal-action-btn" onclick="deleteGoal('${g.id}')">🗑</button></div></div>`).join('')}</div>`;
-}
-
-async function addGoal(){
-  const text=document.getElementById('goal-text').value.trim();if(!text){toast('Enter a goal','err');return}
-  await sb.from('goals').insert({id:'g_'+Date.now(),user_id:uid(),date:goalDate,text,completed:false});
-  await sb.from('profiles').update({total_goals_added:(UP.total_goals_added||0)+1}).eq('id',uid());UP.total_goals_added=(UP.total_goals_added||0)+1;
-  await sb.from('activity').insert({id:'act_'+Date.now(),user_id:uid(),display_name:CU.displayName,username:UP?.username||null,type:'goal',detail:`Added: ${text.slice(0,30)}`});
-  document.getElementById('goal-text').value='';closeModal('modal-goal');renderGoalsPage();renderDashGoals();updateDashStats();renderActivity();toast('Goal added ✓');
-}
-
-async function toggleGoal(id){
-  const{data}=await sb.from('goals').select('*').eq('id',id).single();if(!data)return;
-  const wasCompleted=data.completed;await sb.from('goals').update({completed:!wasCompleted}).eq('id',id);
-  if(!wasCompleted){UP.total_goals_completed=(UP.total_goals_completed||0)+1;await sb.from('profiles').update({total_goals_completed:UP.total_goals_completed}).eq('id',uid());await sb.from('activity').insert({id:'act_'+Date.now(),user_id:uid(),display_name:CU.displayName,username:UP?.username||null,type:'goal',detail:`Completed: ${data.text.slice(0,30)}`});}
-  else{UP.total_goals_completed=Math.max(0,(UP.total_goals_completed||0)-1);await sb.from('profiles').update({total_goals_completed:UP.total_goals_completed}).eq('id',uid());}
-  renderGoalsPage();renderDashGoals();updateDashStats();renderActivity();
-}
-
-async function deleteGoal(id){await sb.from('goals').delete().eq('id',id);renderGoalsPage();renderDashGoals();updateDashStats()}
-
-// ── Sessions ───────────────────────────────────
-function updateSessDateUI(){const d=sessDate,today=todayStr();const ms=['January','February','March','April','May','June','July','August','September','October','November','December'];const dl=d.split('-');document.getElementById('sess-date-label').textContent=fmtDayName(d);document.getElementById('sess-date-sub').textContent=`${ms[parseInt(dl[1])-1]} ${parseInt(dl[2])}, ${dl[0]}`;document.getElementById('sess-today-btn').style.display=d===today?'none':'block';renderSessList()}
-function sessDateNav(n){sessDate=dateShift(sessDate,n);updateSessDateUI()}
-function sessGoToday(){sessDate=todayStr();updateSessDateUI()}
-
-async function renderSessList(){
-  const{data}=await sb.from('sessions').select('*').eq('user_id',uid()).eq('date',sessDate).order('clock_in',{ascending:false});
-  const sessions=data||[];const total=sessions.reduce((a,s)=>a+(s.duration_minutes||0),0);document.getElementById('sess-total').textContent=fmtDur(total);
-  const el=document.getElementById('sess-list');if(!sessions.length){el.innerHTML='<div class="goal-empty" style="padding:24px 0">No sessions for this day</div>';return}
-  el.innerHTML=sessions.map(s=>`<div class="session-item"><div class="session-dot"></div><div class="session-info-left"><div class="session-name">${s.label||'Study session'}</div><div class="session-time">${fmtTime(s.clock_in)} — ${fmtTime(s.clock_out)}</div></div><div class="session-dur">${fmtDur(s.duration_minutes)}</div></div>`).join('');
-}
-
-// ── Notes ──────────────────────────────────────
-function updateNotesDateUI(){const d=noteDate,today=todayStr();const ms=['January','February','March','April','May','June','July','August','September','October','November','December'];const dl=d.split('-');document.getElementById('notes-date-label').textContent=fmtDayName(d);document.getElementById('notes-date-sub').textContent=`${ms[parseInt(dl[1])-1]} ${parseInt(dl[2])}, ${dl[0]}`;document.getElementById('notes-today-btn').style.display=d===today?'none':'block';renderNotesList()}
-function noteDateNav(n){noteDate=dateShift(noteDate,n);updateNotesDateUI()}
-function noteGoToday(){noteDate=todayStr();updateNotesDateUI()}
-
-async function renderNotesList(){
-  const{data}=await sb.from('notes').select('*').eq('user_id',uid()).eq('date',noteDate).order('created_at',{ascending:false});
-  const notes=data||[];const el=document.getElementById('notes-list');
-  if(!notes.length){el.innerHTML='<div class="goal-empty" style="padding:40px 0">No notes for this day</div>';return}
-  el.innerHTML=notes.map(n=>`<div class="note-card"><div class="note-card-top"><span class="mood-tag mood-${n.mood||'Good'}">${n.mood||'Good'}</span><div class="note-card-actions"><button class="goal-action-btn" style="opacity:1" onclick="deleteNote('${n.id}')">🗑</button></div></div><div class="note-card-body">${n.content}</div><div class="note-card-time">${fmtTime(n.created_at)}</div></div>`).join('');
-}
-
-function selectMood(btn,mood){document.querySelectorAll('.mood-opt').forEach(b=>b.classList.remove('active'));btn.classList.add('active');selectedMood=mood}
-async function addNote(){
-  const text=document.getElementById('note-text').value.trim();if(!text){toast('Write something','err');return}
-  await sb.from('notes').insert({id:'n_'+Date.now(),user_id:uid(),date:noteDate,content:text,mood:selectedMood});
-  await sb.from('activity').insert({id:'act_'+Date.now(),user_id:uid(),display_name:CU.displayName,username:UP?.username||null,type:'note',detail:'Added a note'});
-  document.getElementById('note-text').value='';closeModal('modal-note');renderNotesList();renderActivity();toast('Note saved ✓');
-}
-async function deleteNote(id){await sb.from('notes').delete().eq('id',id);renderNotesList()}
-
-// ── Calendar ───────────────────────────────────
-async function renderCalendar(){
-  const ms=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  document.getElementById('cal-month-label').textContent=`${ms[calMonth]} ${calYear}`;
-  const mStr=`${calYear}-${p2(calMonth+1)}`;
-  const{data:events}=await sb.from('events').select('*').eq('user_id',uid()).like('date',mStr+'%');
-  const calEventsMap={};(events||[]).forEach(e=>{(calEventsMap[e.date]=calEventsMap[e.date]||[]).push(e)});
-  const firstDay=new Date(calYear,calMonth,1).getDay();const offset=(firstDay+6)%7;
-  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();const prevMonthDays=new Date(calYear,calMonth,0).getDate();
-  const today=todayStr();let html='';
-  for(let i=0;i<offset;i++){html+=`<div class="cal-cell other-month"><span>${prevMonthDays-offset+i+1}</span></div>`}
-  for(let d=1;d<=daysInMonth;d++){
-    const ds=`${calYear}-${p2(calMonth+1)}-${p2(d)}`;const isToday=ds===today;const isSel=ds===calSelDate;const hasEvt=calEventsMap[ds]?.length>0;
-    html+=`<div class="cal-cell ${isToday?'today':''} ${isSel&&!isToday?'selected':''} ${hasEvt?'has-events':''}" onclick="selectCalDay('${ds}')"><span>${d}</span></div>`;
-  }
-  const totalCells=offset+daysInMonth;const rows=Math.ceil(totalCells/7);const rem=(rows*7)-totalCells;
-  for(let d=1;d<=rem;d++){html+=`<div class="cal-cell other-month"><span>${d}</span></div>`}
-  document.getElementById('cal-grid').innerHTML=html;selectCalDay(calSelDate,true);
-}
-function calNav(n){calMonth+=n;if(calMonth>11){calMonth=0;calYear++}if(calMonth<0){calMonth=11;calYear--}renderCalendar()}
-async function selectCalDay(ds,silent=false){
-  calSelDate=ds;if(!silent)renderCalendar();
-  const ms=['January','February','March','April','May','June','July','August','September','October','November','December'];const[y,m,d]=ds.split('-').map(Number);
-  document.getElementById('cal-sel-label').textContent=`${ms[m-1]} ${d}, ${y}`;document.getElementById('event-date').value=ds;
-  const{data:events}=await sb.from('events').select('*').eq('user_id',uid()).eq('date',ds);
-  const el=document.getElementById('cal-events-list');const evts=events||[];
-  if(!evts.length){el.innerHTML='<div class="cal-no-events">No events</div>';return}
-  el.innerHTML=evts.map(e=>`<div class="event-item"><div class="event-dot"></div><div><div class="event-title">${e.title}</div>${e.time?`<div class="event-time">${e.time}</div>`:''}</div><button class="goal-action-btn" style="opacity:1;margin-left:auto" onclick="deleteEvent('${e.id}')">🗑</button></div>`).join('');
-}
-async function addEvent(){
-  const title=document.getElementById('event-title').value.trim();const date=document.getElementById('event-date').value;const time=document.getElementById('event-time').value;
-  if(!title||!date){toast('Fill in title and date','err');return}
-  await sb.from('events').insert({id:'ev_'+Date.now(),user_id:uid(),title,date,time:time||null});
-  document.getElementById('event-title').value='';document.getElementById('event-time').value='';closeModal('modal-event');renderCalendar();toast('Event added ✓');
-}
-async function deleteEvent(id){await sb.from('events').delete().eq('id',id);renderCalendar()}
-
-// ── Stats ──────────────────────────────────────
-function updateStatsUI(){
-  if(!UP)return;
-  document.getElementById('st-streak').textContent=`${UP.current_streak||0} days`;document.getElementById('st-total').textContent=fmtDur(UP.total_study_minutes||0);
-  document.getElementById('st-goals').textContent=UP.total_goals_completed||0;
-  const rate=UP.total_goals_added>0?Math.round((UP.total_goals_completed/UP.total_goals_added)*100):0;document.getElementById('st-rate').textContent=`${rate}%`;
-  document.getElementById('st2-streak').textContent=`${UP.current_streak||0} days`;document.getElementById('st2-longest').textContent=`${UP.longest_streak||0} days`;
-  document.getElementById('tb-today').textContent=fmtDur(UP.today_study_minutes||0);document.getElementById('tb-week').textContent=fmtDur(UP.week_study_minutes||0);
-  document.getElementById('tb-month').textContent=fmtDur(UP.month_study_minutes||0);document.getElementById('tb-all').textContent=fmtDur(UP.total_study_minutes||0);
-}
-function setPeriod(p,btn){statPeriod=p;document.querySelectorAll('.period-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');renderStats()}
-
-async function renderStats(){
-  updateStatsUI();const today=new Date();const{data:allSessions}=await sb.from('sessions').select('*').eq('user_id',uid());
-  const sessions=allSessions||[];let labels=[],sessData=[],goalsData=[];
-  if(statPeriod==='daily'){for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(today.getDate()-i);const ds=`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;labels.push(`${p2(d.getMonth()+1)}-${p2(d.getDate())}`);sessData.push(sessions.filter(s=>s.date===ds).reduce((a,s)=>a+(s.duration_minutes||0),0));const{data:g}=await sb.from('goals').select('*').eq('user_id',uid()).eq('date',ds);goalsData.push((g||[]).filter(g2=>g2.completed).length)}}
-  else if(statPeriod==='weekly'){for(let i=6;i>=0;i--){const wEnd=new Date(today);wEnd.setDate(today.getDate()-i*7);const wStart=new Date(wEnd);wStart.setDate(wEnd.getDate()-6);const s=`${wStart.getFullYear()}-${p2(wStart.getMonth()+1)}-${p2(wStart.getDate())}`;const e=`${wEnd.getFullYear()}-${p2(wEnd.getMonth()+1)}-${p2(wEnd.getDate())}`;labels.push(`${p2(wStart.getMonth()+1)}-${p2(wStart.getDate())}`);sessData.push(sessions.filter(s2=>s2.date>=s&&s2.date<=e).reduce((a,s2)=>a+(s2.duration_minutes||0),0));goalsData.push(0)}}
-  else{const mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];for(let i=5;i>=0;i--){const d=new Date(today.getFullYear(),today.getMonth()-i,1);const mStr=`${d.getFullYear()}-${p2(d.getMonth()+1)}`;labels.push(mn[d.getMonth()]);sessData.push(sessions.filter(s2=>(s2.date||'').startsWith(mStr)).reduce((a,s2)=>a+(s2.duration_minutes||0),0));goalsData.push(0)}}
-  const chartCfg=(data,lbl)=>({type:'bar',data:{labels,datasets:[{data,backgroundColor:'#f97316',borderRadius:5,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${lbl}: ${c.parsed.y}`},backgroundColor:'#222',titleColor:'#fff',bodyColor:'#aaa',borderColor:'#333',borderWidth:1}},scales:{x:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#666',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#666',font:{size:11}},beginAtZero:true}}}});
-  if(chartTime)chartTime.destroy();chartTime=new Chart(document.getElementById('chart-time').getContext('2d'),chartCfg(sessData,'Minutes'));
-  if(chartGoals)chartGoals.destroy();chartGoals=new Chart(document.getElementById('chart-goals').getContext('2d'),chartCfg(goalsData,'Goals'));
-}
-
-// ── Leaderboard ────────────────────────────────
-async function renderLeaderboard(){
-  const{data}=await sb.from('profiles').select('*').order('total_study_minutes',{ascending:false}).limit(50);
-  const users=(data||[]).sort((a,b)=>(b.current_streak||0)-(a.current_streak||0));
-  const top=users[0];
-  if(top){const isMe=top.id===uid();const topName=isMe?(top.display_name||'User'):(top.username?'@'+top.username:(top.display_name||'User'));const topUn=isMe&&top.username?`<div class="lb-top-username">@${top.username}</div>`:'';document.getElementById('lb-podium').innerHTML=`<div class="lb-top-card"><div class="lb-medal">🥇</div><div class="lb-top-avatar" style="background:${avatarBg(top.id)}">${initials(top.username||top.display_name)}</div><div class="lb-top-name">${topName} ${isMe?'<span class="lb-top-you">(You)</span>':''}</div>${topUn}<div class="lb-top-streak">🔥 ${top.current_streak||0}d</div><div class="lb-top-time">${fmtDur(top.total_study_minutes||0)}</div></div>`}
-  else{document.getElementById('lb-podium').innerHTML='<div class="lb-top-card"><div class="lb-medal">🥇</div><div style="color:var(--text2);padding:20px 0">No users yet</div></div>'}
-  document.getElementById('lb-rows').innerHTML=users.map((u,i)=>{const isMe=u.id===uid();const rank=i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1);const uName=isMe?(u.display_name||'User'):(u.username?'@'+u.username:(u.display_name||'User'));const uSub=isMe&&u.username?`<div class="lb-user-username">@${u.username}</div>`:'';return `<div class="lb-row ${isMe?'me':''}"><div class="lb-rank">${rank}</div><div class="lb-user"><div class="lb-user-av" style="background:${avatarBg(u.id)}">${initials(u.username||u.display_name)}</div><div><div class="lb-user-name">${uName}</div>${uSub}${isMe?'<div class="lb-user-you">You</div>':''}</div></div><div class="lb-streak-val">🔥 ${u.current_streak||0}d</div><div class="lb-time-val">${fmtDur(u.total_study_minutes||0)}</div><div class="lb-goals-val">${u.total_goals_completed||0}</div></div>`}).join('');
-}
-
-// ── Community ──────────────────────────────────
-async function renderCommunity(){
-  const{data}=await sb.from('profiles').select('*');
-  const users=data||[];
-  const el=document.getElementById('members-list');
-  el.innerHTML=users.map(u=>{const isMe=u.id===uid();const studying=!!u.active_session?.clockIn;const showName=isMe?(u.display_name||'User'):(u.username?'@'+u.username:(u.display_name||'User'));const mUn=isMe&&u.username?`<div class="member-username">@${u.username}</div>`:'';return `<div class="member-card" onclick="viewMember('${u.id}')"><div class="member-av" style="background:${avatarBg(u.id)}">${initials(u.username||u.display_name)}${studying?'<div class="online-dot"></div>':''}</div><div class="member-info"><div class="member-name">${showName} ${isMe?'<span class="you-tag">(You)</span>':''}</div>${mUn}<div class="member-status ${studying?'studying':''}">${studying?'Studying now':'Offline'}</div></div></div>`}).join('');
-  document.getElementById('community-detail').innerHTML='<div class="cd-empty"><div class="cd-empty-icon">👥</div><div>Select a user to view their progress</div></div>';
-}
-
-async function viewMember(memberUid){
-  document.querySelectorAll('.member-card').forEach(c=>c.classList.remove('selected'));event.currentTarget.classList.add('selected');
-  const{data:u}=await sb.from('profiles').select('*').eq('id',memberUid).single();if(!u)return;
-  const today=todayStr();const{data:goals}=await sb.from('goals').select('*').eq('user_id',memberUid).eq('date',today);
-  const gList=goals||[];const done=gList.filter(g=>g.completed).length;const isMe=memberUid===uid();const studying=!!u.active_session?.clockIn;
-  const showName=isMe?(u.display_name||'User'):(u.username?'@'+u.username:(u.display_name||'User'));const cdUn=isMe&&u.username?`<div style="font-size:.72rem;color:var(--accent);margin-top:1px">@${u.username}</div>`:(u.username?`<div style="font-size:.72rem;color:var(--text3);margin-top:1px">@${u.username}</div>`:'');document.getElementById('community-detail').innerHTML=`<div class="cd-header"><div class="cd-avatar" style="background:${avatarBg(memberUid)}">${initials(u.username||u.display_name)}</div><div><div class="cd-name">${showName} ${isMe?'<span style="color:var(--accent);font-size:.75rem">(You)</span>':''}</div>${cdUn}<div class="cd-sub">${studying?'🟢 Studying now':'⚫ Offline'}</div></div></div><div class="cd-stats"><div class="cd-stat"><div class="cd-stat-val">🔥 ${u.current_streak||0}</div><div class="cd-stat-label">Day Streak</div></div><div class="cd-stat"><div class="cd-stat-val">${fmtDur(u.today_study_minutes||0)}</div><div class="cd-stat-label">Today</div></div><div class="cd-stat"><div class="cd-stat-val">${u.total_goals_completed||0}</div><div class="cd-stat-label">Goals Done</div></div></div><div class="cd-goals-title">TODAY'S GOALS (${done}/${gList.length})</div>${gList.length?gList.map(g=>`<div class="cd-goal-item"><div class="cd-check ${g.completed?'done':''}">${g.completed?'✓':''}</div><span style="${g.completed?'text-decoration:line-through;color:var(--text2)':''}">${g.text}</span></div>`).join(''):'<div style="color:var(--text2);font-size:.82rem;padding:12px 0">No goals set for today</div>'}`;
-}
-
-// ── Init ───────────────────────────────────────
-(async function init(){
-  try {
-    if(!sb) { showPage('page-auth'); return; }
-    const{data:{session}}=await sb.auth.getSession();
-    if(session?.user){
-      CU={id:session.user.id,displayName:session.user.user_metadata?.display_name||session.user.email,email:session.user.email};
-      showPage('page-app');await loadApp();
-    }else{showPage('page-auth')}
-  } catch(e) { console.error('Init error:', e); showPage('page-auth'); }
-})();
-</script>
+<script src="studyapp.js"></script>
 </body>
 </html>
