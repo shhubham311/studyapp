@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#0a0a0a"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>StudyTrack</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -40,7 +43,8 @@ a{color:inherit;text-decoration:none}
 .auth-divider::before{left:0}.auth-divider::after{right:0}
 .auth-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:9px 12px;color:#f87171;font-size:0.78rem;margin-bottom:12px;display:none}
 .auth-info{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);border-radius:8px;padding:12px;color:#60a5fa;font-size:0.78rem;margin-bottom:12px;display:none;line-height:1.5}
-#page-app{flex-direction:row}
+.app-body{display:flex;flex-direction:row;flex:1;min-height:0}
+#page-app{flex-direction:column}
 #sidebar{width:var(--sidebar-w);flex-shrink:0;background:#0d0d0d;border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;position:sticky;top:0;overflow-y:auto}
 .sb-logo{display:flex;align-items:center;gap:9px;padding:18px 16px 14px}
 .sb-logo-icon{width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.95rem}
@@ -231,8 +235,89 @@ a{color:inherit;text-decoration:none}
 @keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 .setup-banner{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);border-radius:10px;padding:16px 20px;margin-bottom:16px;font-size:0.82rem;color:#93c5fd;display:none;line-height:1.6}
 .setup-banner button{margin-top:8px;padding:8px 16px;border-radius:8px;background:var(--blue);color:#fff;font-weight:600;font-size:0.8rem}
-@media(max-width:900px){.stats-grid,.stats-summary{grid-template-columns:1fr 1fr}.dash-bottom,.cal-layout,.community-layout,.stats-bottom,.lb-table-head,.lb-row{grid-template-columns:1fr}.lb-table-head,.lb-row{display:flex;flex-wrap:wrap}}
-@media(max-width:700px){#sidebar{display:none}.view{padding:16px}.stats-grid,.stats-summary{grid-template-columns:1fr 1fr}}
+/* ── Mobile bottom nav ────────────────────── */
+.mobile-header{display:none;position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:10px 16px;align-items:center;justify-content:space-between}
+.mobile-header-logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:1rem}
+.mobile-header-logo span{background:var(--accent);width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.8rem}
+.mobile-header-profile{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;cursor:pointer}
+.mobile-bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:#0d0d0d;border-top:1px solid var(--border);padding:6px 0 env(safe-area-inset-bottom,6px)}
+.mobile-nav-items{display:flex;justify-content:space-around;align-items:center}
+.mob-nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 6px;background:none;color:var(--text3);font-size:.6rem;font-weight:500;min-width:0;flex:1;transition:color .15s}
+.mob-nav-item svg{width:18px;height:18px}
+.mob-nav-item.active{color:var(--accent)}
+.mob-nav-item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:56px}
+.mob-profile-btn{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;cursor:pointer;background:var(--accent);color:#fff}
+
+/* ── Responsive: Tablet ───────────────────── */
+@media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr)}.stats-summary{grid-template-columns:repeat(2,1fr)}.dash-bottom{grid-template-columns:1fr}.cal-layout{grid-template-columns:1fr}.community-layout{grid-template-columns:1fr}.stats-bottom{grid-template-columns:1fr}}
+@media(max-width:900px){.stats-grid,.stats-summary{grid-template-columns:1fr 1fr}.dash-bottom,.cal-layout,.community-layout,.stats-bottom{grid-template-columns:1fr}.lb-table-head,.lb-row{grid-template-columns:36px 1fr 70px 70px 60px;gap:4px;padding:10px 12px}.lb-table-head{font-size:.6rem}.lb-streak-val,.lb-time-val,.lb-goals-val{font-size:.75rem}.page-top{flex-direction:column;gap:12px;align-items:flex-start}.cd-stats{grid-template-columns:repeat(3,1fr);gap:8px}}
+
+/* ── Responsive: Mobile ───────────────────── */
+@media(max-width:700px){
+  #sidebar{display:none!important}
+  .mobile-header{display:flex}
+  .mobile-bottom-nav{display:block}
+  .app-body{flex:1;min-height:0}
+  #main{padding-bottom:70px}
+  .view{padding:16px 14px}
+  .page-top{flex-direction:column;gap:10px;align-items:flex-start}
+  .page-top-left h1{font-size:1.3rem}
+  .stats-grid,.stats-summary{grid-template-columns:1fr 1fr;gap:10px}
+  .stat-box{padding:12px}
+  .stat-box-val{font-size:1.2rem}
+  .dash-top{flex-direction:column;gap:10px;align-items:flex-start}
+  .dash-greeting h1{font-size:1.3rem}
+  .clock-banner{flex-direction:column;gap:14px;text-align:center;align-items:stretch}
+  .clock-banner-left{text-align:center}
+  .clock-banner-left .timer-live{font-size:1.3rem}
+  .btn-clock-in{width:100%;justify-content:center}
+  .dash-bottom{grid-template-columns:1fr}
+  .cal-layout{grid-template-columns:1fr}
+  .community-layout{grid-template-columns:1fr}
+  .stats-bottom{grid-template-columns:1fr}
+  .session-clock-card{padding:20px 16px}
+  .session-label-input{width:100%}
+  .session-active-timer{font-size:1.5rem}
+  .auth-card{padding:28px 20px;width:100%;border-radius:12px}
+  .modal{max-width:100%;margin:0 8px;padding:20px 16px;border-radius:12px;max-height:90vh;overflow-y:auto}
+  .overlay{padding:10px;align-items:flex-end}
+  .overlay.open .modal{border-radius:12px 12px 0 0}
+  .lb-podium{margin-bottom:16px}
+  .lb-top-card{padding:16px;min-width:auto}
+  .lb-table{overflow-x:auto}
+  .lb-table-head,.lb-row{grid-template-columns:32px 1fr 60px 60px 50px;gap:4px;padding:10px 10px;font-size:.7rem}
+  .lb-table-head{font-size:.58rem}
+  .lb-streak-val,.lb-time-val,.lb-goals-val{font-size:.72rem}
+  .lb-user-av{width:26px;height:26px;font-size:.65rem}
+  .cd-header{flex-direction:column;text-align:center;gap:10px}
+  .cd-stats{grid-template-columns:repeat(3,1fr);gap:8px}
+  .cd-stat{padding:10px 6px}
+  .cd-stat-val{font-size:.95rem}
+  .cd-stat-label{font-size:.62rem}
+  .cal-grid-head .cal-head-cell{font-size:.65rem;padding:3px}
+  .cal-cell{font-size:.72rem;border-radius:6px}
+  .cal-cell span{font-size:.7rem}
+  .goal-card{padding:12px}
+  .goal-card-actions{opacity:1}
+  .note-card{padding:12px}
+  .date-nav{gap:8px}
+  .date-nav-label{font-size:.85rem;min-width:auto}
+  .btn-accent{padding:8px 14px;font-size:.78rem}
+  .chart-wrap{height:140px}
+  .toast{max-width:240px;font-size:.78rem}
+  .members-list{flex-direction:row;flex-wrap:wrap;gap:8px}
+  .member-card{flex:1;min-width:140px;padding:8px 10px}
+  .member-av{width:30px;height:30px;font-size:.75rem}
+}
+@media(max-width:400px){
+  .stats-grid,.stats-summary{grid-template-columns:1fr}
+  .view{padding:12px 10px}
+  .auth-card{padding:24px 16px}
+  .lb-table-head,.lb-row{grid-template-columns:28px 1fr 50px 50px}
+  .lb-goals-val{display:none}
+  .lb-table-head div:last-child{display:none}
+  .cd-stats{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
@@ -266,6 +351,12 @@ a{color:inherit;text-decoration:none}
 </div>
 
 <div id="page-app" class="page">
+  <!-- Mobile Header -->
+  <div class="mobile-header">
+    <div class="mobile-header-logo"><span>📈</span> StudyTrack</div>
+    <div class="mobile-header-profile" id="mob-profile-btn" onclick="openProfileModal()"></div>
+  </div>
+  <div class="app-body">
   <nav id="sidebar">
     <div class="sb-logo"><div class="sb-logo-icon">📈</div><div class="sb-logo-text">StudyTrack</div></div>
     <div class="sb-divider"></div>
@@ -385,6 +476,18 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
   </main>
+  </div>
+  <!-- Mobile Bottom Navigation -->
+  <div class="mobile-bottom-nav">
+    <div class="mobile-nav-items">
+      <button class="mob-nav-item active" data-view="dashboard" onclick="showView('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>Home</span></button>
+      <button class="mob-nav-item" data-view="goals" onclick="showView('goals')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span>Goals</span></button>
+      <button class="mob-nav-item" data-view="sessions" onclick="showView('sessions')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Timer</span></button>
+      <button class="mob-nav-item" data-view="notes" onclick="showView('notes')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span>Notes</span></button>
+      <button class="mob-nav-item" data-view="calendar" onclick="showView('calendar')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></button>
+      <button class="mob-nav-item" data-view="leaderboard" onclick="showView('leaderboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg><span>Ranks</span></button>
+    </div>
+  </div>
 </div>
 
 <div class="overlay" id="modal-goal" onclick="if(event.target===this)closeModal('modal-goal')"><div class="modal"><div class="modal-title">Add Goal<button class="modal-close" onclick="closeModal('modal-goal')">✕</button></div><div class="modal-field"><label>Goal Description</label><input type="text" id="goal-text" placeholder="What do you want to achieve today?" onkeydown="if(event.key==='Enter')addGoal()"/></div><div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-goal')">Cancel</button><button class="btn-modal-submit" onclick="addGoal()">Add Goal</button></div></div></div>
@@ -428,7 +531,7 @@ function uid(){return CU?CU.id:null}
 function toast(msg,type='ok'){const el=document.createElement('div');el.className=`toast ${type}`;el.innerHTML=`<span>${type==='ok'?'✓':'✕'}</span><span>${msg}</span>`;document.getElementById('toast-wrap').appendChild(el);setTimeout(()=>el.remove(),3500)}
 
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('view-'+id).classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.view===id));if(id==='calendar')renderCalendar();if(id==='stats')renderStats();if(id==='leaderboard')renderLeaderboard();if(id==='community')renderCommunity()}
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('view-'+id).classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.view===id));document.querySelectorAll('.mob-nav-item').forEach(n=>n.classList.toggle('active',n.dataset.view===id));if(id==='calendar')renderCalendar();if(id==='stats')renderStats();if(id==='leaderboard')renderLeaderboard();if(id==='community')renderCommunity()}
 function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
 
@@ -580,9 +683,10 @@ function setGreeting(){
   document.getElementById('d-greeting').textContent=`${g}, ${CU.displayName?.split(' ')[0]||'there'}`;
   document.getElementById('d-date').textContent=new Date().toLocaleDateString([],{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   document.getElementById('sb-name').textContent=CU.displayName||'User';
-  document.getElementById('sb-email').textContent=CU.email||'';
-  const un=UP?.username;if(un)document.getElementById('sb-username').textContent='@'+un;else document.getElementById('sb-username').textContent='';
+  const un=UP?.username;if(un)document.getElementById('sb-username').textContent='@'+un;else document.getElementById('sb-username').textContent='No username set';
+  document.getElementById('sb-email').textContent='';
   const av=document.getElementById('sb-avatar');av.style.background=avatarBg(CU.id);av.textContent=initials(CU.displayName);
+  const mobAv=document.getElementById('mob-profile-btn');if(mobAv){mobAv.style.background=avatarBg(CU.id);mobAv.textContent=initials(CU.displayName);}
 }
 
 function openProfileModal(){
