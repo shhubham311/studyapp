@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <filter id="n">
+    <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+    <feComponentTransfer>
+      <feFuncA type="table" tableValues="0 .18"/>
+    </feComponentTransfer>
+  </filter>
+  <rect width="160" height="160" filter="url(#n)"/>
+  <path d="M0 40h160M0 80h160M0 120h160M40 0v160M80 0v160M120 0v160" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="1"/>
+</svg>
