@@ -2612,8 +2612,9 @@ function cssVar(name) {
 
 function chartGridColor() {
   const dark = document.documentElement.getAttribute('data-theme') === 'dark';
-  return dark ? 'rgba(255,255,255,0.045)' : 'rgba(15,23,42,0.055)';
+  return dark ? 'rgba(255,255,255,0.12)' : 'rgba(15,23,42,0.12)';
 }
+
 
 function subjectColorValue(subject) {
   return cssVar(subject?.color || '--accent') || cssVar('--accent') || '#6366f1';
