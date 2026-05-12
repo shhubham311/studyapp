@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<meta name="theme-color" content="#0c0c1d"/>
+<meta name="theme-color" content="#0a0a1a"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>StudyTrack</title>
@@ -14,39 +14,99 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<link rel="stylesheet" href="studyapp.css"/>
+<link rel="stylesheet" href="css2.css"/>
 </head>
 <body>
 
+<!-- ═══ LOADING SCREEN ═══ -->
+<div id="page-loading" class="page-loading">
+  <div class="loading-logo">
+    <div class="loading-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <span>StudyTrack</span>
+  </div>
+  <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+</div>
+
 <!-- ═══ AUTH PAGE ═══ -->
-<div id="page-auth" class="page active">
+<div id="page-auth" class="page">
+  <div class="auth-bg">
+    <div class="auth-orb auth-orb-1"></div>
+    <div class="auth-orb auth-orb-2"></div>
+    <div class="auth-orb auth-orb-3"></div>
+  </div>
   <div class="auth-card">
     <div class="auth-logo">
-      <div class="auth-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="auth-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
       <div class="auth-logo-text">StudyTrack</div>
     </div>
+    <p class="auth-tagline">Level up your learning</p>
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
       <button class="auth-tab" onclick="switchTab('register')">Sign Up</button>
     </div>
     <div id="auth-err" class="auth-err"></div>
     <div id="form-login">
-      <div class="field"><label>Email</label><input type="email" id="l-email" placeholder="you@email.com" onkeydown="if(event.key==='Enter')loginEmail()"/></div>
-      <div class="field"><label>Password</label><input type="password" id="l-pass" placeholder="Enter your password" onkeydown="if(event.key==='Enter')loginEmail()"/></div>
-      <button class="btn-primary" onclick="loginEmail()" id="l-btn">Sign In</button>
-      <div class="auth-divider">or</div>
+      <div class="field">
+        <label>Email</label>
+        <div class="field-wrap">
+          <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <input type="email" id="l-email" placeholder="you@email.com" onkeydown="if(event.key==='Enter')loginEmail()"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="field-wrap">
+          <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="l-pass" placeholder="Enter your password" onkeydown="if(event.key==='Enter')loginEmail()"/>
+        </div>
+      </div>
+      <div class="forgot-password-link"><a href="#" onclick="openForgotPasswordModal(event)">Forgot password?</a></div>
+      <button class="btn-primary" onclick="loginEmail()" id="l-btn">
+        <span>Sign In</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+      <div class="auth-divider"><span>or</span></div>
       <button class="btn-offline" onclick="loginOffline()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         Continue without signing in
       </button>
-      <div class="auth-offline-note">Data is stored locally on this device only</div>
+      <div class="auth-offline-note">Data stored locally on this device only</div>
     </div>
     <div id="form-register" style="display:none">
-      <div class="field"><label>Display Name</label><input type="text" id="r-name" placeholder="Your name"/></div>
-      <div class="field"><label>Username</label><input type="text" id="r-username" placeholder="Choose a unique username" onkeydown="if(event.key===' ')event.preventDefault()"/></div>
-      <div class="field"><label>Email</label><input type="email" id="r-email" placeholder="you@email.com"/></div>
-      <div class="field"><label>Password</label><input type="password" id="r-pass" placeholder="Min 6 characters"/></div>
-      <button class="btn-primary" onclick="registerEmail()" id="r-btn">Create Account</button>
+      <div class="field">
+        <label>Display Name</label>
+        <div class="field-wrap">
+          <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input type="text" id="r-name" placeholder="Your name"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Username</label>
+        <div class="field-wrap">
+          <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input type="text" id="r-username" placeholder="Choose a unique username" onkeydown="if(event.key===' ')event.preventDefault()"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <div class="field-wrap">
+          <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <input type="email" id="r-email" placeholder="you@email.com"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="field-wrap">
+          <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="r-pass" placeholder="Min 6 characters"/>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="registerEmail()" id="r-btn">
+        <span>Create Account</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
     </div>
   </div>
 </div>
@@ -55,6 +115,9 @@
 <div id="page-app" class="page">
   <!-- Mobile Header -->
   <div class="mobile-header">
+    <button class="mobile-menu-btn" type="button" onclick="toggleNavDrawer()" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
     <div class="mobile-header-logo">
       <div class="mobile-header-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
       StudyTrack
@@ -75,28 +138,73 @@
       <div class="sb-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
       <div class="sb-logo-text">StudyTrack</div>
     </div>
+
     <div class="sb-section">
       <div class="sb-section-label">Main</div>
-      <button class="nav-item active" data-view="dashboard" onclick="showView('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</button>
-      <button class="nav-item" data-view="goals" onclick="showView('goals')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Goals</button>
-      <button class="nav-item" data-view="sessions" onclick="showView('sessions')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Sessions</button>
-      <button class="nav-item" data-view="notes" onclick="showView('notes')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Notes</button>
+      <button class="nav-item active" data-view="dashboard" onclick="showView('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" data-view="goals" onclick="showView('goals')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        Goals
+      </button>
+      <button class="nav-item" data-view="sessions" onclick="showView('sessions')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Sessions
+      </button>
+      <button class="nav-item" data-view="notes" onclick="showView('notes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Notes
+      </button>
+      <button class="nav-item" data-view="subjects" onclick="showView('subjects')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 6v6m3-3H9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Subjects
+      </button>
     </div>
+
     <div class="sb-section">
-      <div class="sb-section-label">Planning</div>
-      <button class="nav-item" data-view="calendar" onclick="showView('calendar')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</button>
-      <button class="nav-item" data-view="stats" onclick="showView('stats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Stats</button>
+      <div class="sb-section-label">Insights</div>
+      <button class="nav-item" data-view="calendar" onclick="showView('calendar')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Calendar
+      </button>
+      <button class="nav-item" data-view="stats" onclick="showView('stats')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Statistics
+      </button>
     </div>
+
     <div class="sb-section">
       <div class="sb-section-label">Social</div>
-      <button class="nav-item" data-view="leaderboard" onclick="showView('leaderboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Leaderboard</button>
-      <button class="nav-item" data-view="community" onclick="showView('community')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Community</button>
+      <button class="nav-item" data-view="leaderboard" onclick="showView('leaderboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        Leaderboard
+      </button>
+      <button class="nav-item" data-view="community" onclick="showView('community')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Community
+      </button>
     </div>
+
     <div class="sb-section">
       <div class="sb-section-label">Config</div>
-      <button class="nav-item" data-view="settings" onclick="showView('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</button>
+      <button class="nav-item" data-view="settings" onclick="showView('settings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </button>
     </div>
+
     <div class="sb-bottom">
+      <!-- XP Bar -->
+      <div class="sb-xp-wrap" id="sb-xp-wrap">
+        <div class="sb-xp-top">
+          <span class="sb-level-badge" id="sb-level-badge">Lv.1</span>
+          <span class="sb-xp-label" id="sb-xp-label">0 / 500 XP</span>
+        </div>
+        <div class="sb-xp-track"><div class="sb-xp-fill" id="sb-xp-fill" style="width:0%"></div></div>
+      </div>
+
       <div class="sb-user" onclick="openProfileModal()" title="Edit profile & change password">
         <div class="sb-avatar" id="sb-avatar"></div>
         <div class="sb-user-info">
@@ -105,141 +213,439 @@
           <div class="sb-offline-badge" id="sb-offline-badge" style="display:none">Local Mode</div>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;padding:0 10px">
+
+      <div class="sb-actions">
         <div class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
           <svg class="toggle-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
           <svg class="toggle-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </div>
-        <button class="btn-logout" onclick="logout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Log out</button>
+        <button class="btn-logout" onclick="logout()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Log out
+        </button>
       </div>
     </div>
   </nav>
+  <div class="drawer-backdrop" onclick="closeNavDrawer()" aria-hidden="true"></div>
 
   <!-- Main Content -->
   <main id="main">
 
-    <!-- Dashboard -->
+    <!-- ─── Dashboard ─── -->
     <div id="view-dashboard" class="view active">
       <div id="setup-banner" class="setup-banner">
-        <strong>Database Setup Required</strong><br/>Click below to automatically create the required tables in your Supabase project.
+        <strong>Database Setup Required</strong><br/>Click below to create the required tables in your Supabase project.
         <br/><button onclick="setupDatabase()">Setup Database Now</button>
       </div>
-      <div class="dash-top">
-        <div class="dash-greeting"><h1 id="d-greeting">Good afternoon</h1><p id="d-date"></p></div>
-        <div class="dash-top-right">
-          <div class="streak-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span id="d-streak-badge">0 day streak</span></div>
-          <button class="btn-ghost" onclick="openFocusMode()" title="Focus Mode (F)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Focus</button>
-          <button class="btn-ghost" onclick="openCommandPalette()" title="Command Palette (Ctrl+K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10M7 12h6"/></svg>Commands</button>
+
+      <!-- Greeting + Quick Actions -->
+      <div class="dash-header">
+        <div class="dash-greeting">
+          <div class="dash-greeting-day" id="d-date"></div>
+          <h1 id="d-greeting">Good afternoon</h1>
+          <div class="dash-greeting-sub" id="d-greeting-sub">Ready to achieve something great today?</div>
+        </div>
+        <div class="dash-header-right">
+          <div class="streak-badge" id="d-streak-badge-wrap">
+            <div class="streak-fire">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 23c-4.4 0-8-3.6-8-8 0-5 4-8 4-12 1 2 2 3 4 4 0-3 2-5 4-7 0 4 3 5 3 8 1-1 1-2 1-3 1.7 2 3 4 3 7-0.3 4.3-3.7 11-11 11z"/></svg>
+            </div>
+            <span id="d-streak-badge">0 day streak</span>
+          </div>
+          <button class="btn-ghost" onclick="openFocusMode()" title="Focus Mode (F)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            Focus
+          </button>
+          <button class="btn-ghost" onclick="openCommandPalette()" title="Command Palette (Ctrl+K)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10M7 12h6"/></svg>
+            Commands
+          </button>
         </div>
       </div>
+
+      <div class="weekly-goal-banner" id="weekly-goal-banner">
+        <div class="weekly-goal-top">
+          <span id="weekly-goal-label">This week: 0m / Goal: 10h</span>
+          <span id="weekly-goal-pct">0%</span>
+        </div>
+        <div class="weekly-goal-track"><div class="weekly-goal-fill" id="weekly-goal-fill"></div></div>
+      </div>
+
+      <!-- Clock-In Banner -->
       <div class="clock-banner" id="d-clock-banner">
+        <div class="clock-banner-pulse" id="d-clock-pulse"></div>
         <div class="clock-banner-left">
           <div class="clock-label" id="d-clock-label">READY TO FOCUS?</div>
           <h2 id="d-clock-title">Start your session</h2>
+          <div class="dash-clock-picker" id="dash-clock-subject-picker"></div>
           <div class="timer-live" id="d-timer" style="display:none">00:00:00</div>
         </div>
         <button class="btn-clock-in" id="d-clock-btn" onclick="toggleClockDash()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>Clock In
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+          Clock In
         </button>
       </div>
+
+      <!-- Stat Tiles -->
       <div class="stats-grid">
-        <div class="stat-box"><div class="stat-box-top"><div class="stat-box-icon" style="background:var(--accent-dim);color:var(--accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><div class="stat-box-label">Today's Goals</div></div><div class="stat-box-val" id="d-goals-val">0/0</div><div class="stat-box-sub" id="d-goals-sub">No goals yet</div></div>
-        <div class="stat-box"><div class="stat-box-top"><div class="stat-box-icon" style="background:var(--green-dim);color:var(--green)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="stat-box-label">Today's Time</div></div><div class="stat-box-val" id="d-today-val">0m</div><div class="stat-box-sub">focused today</div></div>
-        <div class="stat-box"><div class="stat-box-top"><div class="stat-box-icon" style="background:var(--purple-dim);color:var(--purple)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div class="stat-box-label">Weekly Time</div></div><div class="stat-box-val" id="d-week-val">0m</div><div class="stat-box-sub">this week</div></div>
-        <div class="stat-box"><div class="stat-box-top"><div class="stat-box-icon" style="background:var(--amber-dim);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="stat-box-label">Completion Rate</div></div><div class="stat-box-val" id="d-rate-val">0%</div><div class="stat-box-sub">all time</div></div>
+        <div class="stat-box" data-color="accent">
+          <div class="stat-box-top">
+            <div class="stat-box-icon accent-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </div>
+            <div class="stat-box-label">Today's Goals</div>
+          </div>
+          <div class="stat-box-val" id="d-goals-val">0/0</div>
+          <div class="stat-box-sub" id="d-goals-sub">No goals yet</div>
+          <svg class="stat-sparkline" id="spark-goals" viewBox="0 0 80 24" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="stat-box" data-color="green">
+          <div class="stat-box-top">
+            <div class="stat-box-icon green-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="stat-box-label">Today's Time</div>
+          </div>
+          <div class="stat-box-val" id="d-today-val">0m</div>
+          <div class="stat-box-sub">focused today</div>
+          <svg class="stat-sparkline" id="spark-time" viewBox="0 0 80 24" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="stat-box" data-color="violet">
+          <div class="stat-box-top">
+            <div class="stat-box-icon violet-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+            <div class="stat-box-label">Weekly Time</div>
+          </div>
+          <div class="stat-box-val" id="d-week-val">0m</div>
+          <div class="stat-box-sub">this week</div>
+          <svg class="stat-sparkline" id="spark-week" viewBox="0 0 80 24" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="stat-box" data-color="amber">
+          <div class="stat-box-top">
+            <div class="stat-box-icon amber-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <div class="stat-box-label">Completion Rate</div>
+          </div>
+          <div class="stat-box-val" id="d-rate-val">0%</div>
+          <div class="stat-box-sub">all time</div>
+          <svg class="stat-sparkline" id="spark-rate" viewBox="0 0 80 24" preserveAspectRatio="none"></svg>
+        </div>
       </div>
+
+      <!-- Charts Section -->
+      <div class="dash-chart-grid">
+        <div class="chart-card">
+          <div class="chart-title">TODAY'S TIMELINE</div>
+          <div class="chart-wrap"><canvas id="chart-hourly"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">TODAY'S GOALS</div>
+          <div class="chart-wrap"><canvas id="chart-goals-donut"></canvas></div>
+        </div>
+        <div class="chart-card dash-chart-wide">
+          <div class="chart-title">TIME BY SUBJECT</div>
+          <div class="chart-empty" id="subject-time-empty" style="display:none">No subject time logged yet.</div>
+          <div class="chart-wrap"><canvas id="chart-subjects-bar"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Bottom: Goals + Activity -->
       <div class="dash-bottom">
-        <div class="card card-p"><div class="section-title">Today's Goals<button class="btn-link" onclick="showView('goals')">View All</button></div><div id="d-goal-list"><div class="goal-empty">No goals for today. <a href="#" onclick="showView('goals');return false">Add one</a></div></div></div>
-        <div class="card card-p"><div class="section-title">Live Activity</div><div id="d-activity-list"><div class="goal-empty">No activity yet</div></div></div>
+        <div class="card card-p">
+          <div class="section-title">
+            Today's Goals
+            <button class="btn-link" onclick="showView('goals')">View All</button>
+          </div>
+          <div id="d-goal-list"><div class="goal-empty">No goals for today. <a href="#" onclick="showView('goals');return false">Add one</a></div></div>
+        </div>
+        <div class="card card-p">
+          <div class="section-title">Live Activity</div>
+          <div id="d-activity-list"><div class="goal-empty">No activity yet</div></div>
+        </div>
       </div>
     </div>
 
-    <!-- Goals -->
+    <!-- ─── Goals ─── -->
     <div id="view-goals" class="view">
-      <div class="page-top"><div class="page-top-left"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Goals</h1><p>Set and track your daily objectives</p></div><button class="btn-accent" onclick="openModal('modal-goal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Goal</button></div>
-      <div class="date-nav"><button class="btn-icon" onclick="goalDateNav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="date-nav-label" id="goals-date-label">Friday</div><div class="date-nav-sub" id="goals-date-sub"></div></div><button class="btn-icon" onclick="goalDateNav(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button><button class="btn-today" id="goals-today-btn" onclick="goalGoToday()" style="display:none">Today</button></div>
+      <div class="page-top">
+        <div class="page-top-left">
+          <h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Goals</h1>
+          <p>Set and track your daily objectives</p>
+        </div>
+        <button class="btn-accent" onclick="openModal('modal-goal')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Goal
+        </button>
+      </div>
+      <div class="date-nav">
+        <button class="btn-icon" onclick="goalDateNav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div>
+          <div class="date-nav-label" id="goals-date-label">Today</div>
+          <div class="date-nav-sub" id="goals-date-sub"></div>
+        </div>
+        <button class="btn-icon" onclick="goalDateNav(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+        <button class="btn-today" id="goals-today-btn" onclick="goalGoToday()" style="display:none">Today</button>
+      </div>
+      <div class="filter-pills-wrap" id="goals-filter-pills"></div>
       <div id="goals-list-wrap"></div>
     </div>
 
-    <!-- Sessions + Pomodoro -->
+    <!-- ─── Sessions + Pomodoro ─── -->
     <div id="view-sessions" class="view">
-      <div class="page-top"><div class="page-top-left"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Sessions</h1><p>Clock in and use the Pomodoro timer to stay focused</p></div></div>
-      <div class="session-clock-card" id="sess-clock-card">
-        <!-- Pomodoro Ring -->
+      <div class="page-top">
+        <div class="page-top-left">
+          <h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Sessions</h1>
+          <p>Clock in and use the Pomodoro timer to stay focused</p>
+        </div>
+      </div>
+
+      <!-- Pomodoro Card -->
+      <div class="session-clock-card">
+        <!-- Mode Tabs -->
+        <div class="pomo-modes">
+          <button class="pomo-mode active" onclick="setPomoMode('focus')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+            Focus 25m
+          </button>
+          <button class="pomo-mode" onclick="setPomoMode('short')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+            Short 5m
+          </button>
+          <button class="pomo-mode" onclick="setPomoMode('long')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Long 15m
+          </button>
+        </div>
+
+        <!-- Ring -->
         <div class="pomo-ring-wrap">
-          <svg class="pomo-ring-svg" viewBox="0 0 200 200">
-            <circle class="pomo-ring-bg" cx="100" cy="100" r="88"/>
-            <circle class="pomo-ring-fg" id="pomo-ring-fg" cx="100" cy="100" r="88" stroke-dasharray="553" stroke-dashoffset="0"/>
+          <!-- Outer decorative ring -->
+          <div class="pomo-ring-outer"></div>
+          <svg class="pomo-ring-svg" viewBox="0 0 220 220">
+            <defs>
+              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="var(--accent)"/>
+                <stop offset="100%" stop-color="var(--violet)"/>
+              </linearGradient>
+            </defs>
+            <circle class="pomo-ring-bg" cx="110" cy="110" r="96"/>
+            <circle class="pomo-ring-track" cx="110" cy="110" r="96"/>
+            <circle class="pomo-ring-fg" id="pomo-ring-fg" cx="110" cy="110" r="96" stroke-dasharray="603" stroke-dashoffset="0"/>
           </svg>
           <div class="pomo-ring-center">
             <div class="pomo-time" id="pomo-time">25:00</div>
-            <div class="pomo-label" id="pomo-label">Focus</div>
+            <div class="pomo-label" id="pomo-label">Ready</div>
           </div>
         </div>
-        <!-- Pomodoro Modes -->
-        <div class="pomo-modes">
-          <button class="pomo-mode active" onclick="setPomoMode('focus')">Focus 25m</button>
-          <button class="pomo-mode" onclick="setPomoMode('short')">Short 5m</button>
-          <button class="pomo-mode" onclick="setPomoMode('long')">Long 15m</button>
-        </div>
+
         <!-- Controls -->
         <div class="pomo-controls">
-          <button class="pomo-btn pomo-btn-sec" onclick="resetPomo()" title="Reset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
-          <button class="pomo-btn pomo-btn-play" id="pomo-play-btn" onclick="togglePomo()"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg></button>
-          <button class="pomo-btn pomo-btn-sec" onclick="openFocusMode()" title="Focus Mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></button>
+          <button class="pomo-btn pomo-btn-sec" onclick="resetPomo()" title="Reset">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          </button>
+          <button class="pomo-btn pomo-btn-play" id="pomo-play-btn" onclick="togglePomo()">
+            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+          </button>
+          <button class="pomo-btn pomo-btn-sec" onclick="openFocusMode()" title="Focus Mode">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </button>
         </div>
-        <!-- Label -->
-        <input class="session-label-input" id="sess-label" placeholder="Session label (optional)..."/>
-        <!-- Pomo Tally -->
-        <div class="pomo-tally" id="pomo-tally"></div>
+
+        <!-- Session Label & Subject -->
+        <div class="session-subject-row">
+          <input class="session-label-input" id="sess-label" placeholder="Session label (optional)..." style="flex: 1;"/>
+          <div id="sess-subject-picker" style="flex: 1;"></div>
+        </div>
+
+        <!-- Pomodoro Tally -->
+        <div class="pomo-tally-wrap">
+          <div class="pomo-tally" id="pomo-tally"></div>
+          <div class="pomo-tally-label">Session <span id="pomo-count-label">0</span> / 4</div>
+        </div>
+
         <!-- Ambient Sounds -->
-        <div class="ambient-bar" id="ambient-bar">
-          <button class="ambient-btn" data-sound="rain" onclick="toggleAmbient('rain',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6l3.5 3.5"/><circle cx="12" cy="14" r="8"/></svg>Rain</button>
-          <button class="ambient-btn" data-sound="waves" onclick="toggleAmbient('waves',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2s2.5 2 2.5 2"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2s2.5 2 2.5 2"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2s2.5 2 2.5 2"/></svg>Waves</button>
-          <button class="ambient-btn" data-sound="wind" onclick="toggleAmbient('wind',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>Wind</button>
-          <button class="ambient-btn" data-sound="brown" onclick="toggleAmbient('brown',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 4 18 3-9h6"/></svg>Brown</button>
-          <input type="range" class="ambient-vol" min="0" max="100" value="40" oninput="setAmbientVol(this.value)" title="Volume"/>
+        <div class="ambient-section">
+          <div class="ambient-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            Ambient Sound
+          </div>
+          <div class="ambient-bar" id="ambient-bar">
+            <button class="ambient-btn" data-sound="rain" onclick="toggleAmbient('rain',this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="16" y1="13" x2="16" y2="21"/><line x1="8" y1="13" x2="8" y2="21"/><line x1="12" y1="15" x2="12" y2="23"/><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg>
+              Rain
+            </button>
+            <button class="ambient-btn" data-sound="waves" onclick="toggleAmbient('waves',this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2s2.5 2 2.5 2"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2s2.5 2 2.5 2"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2s2.5 2 2.5 2"/></svg>
+              Waves
+            </button>
+            <button class="ambient-btn" data-sound="wind" onclick="toggleAmbient('wind',this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
+              Wind
+            </button>
+            <button class="ambient-btn" data-sound="brown" onclick="toggleAmbient('brown',this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 4 18 3-9h6"/></svg>
+              Brown
+            </button>
+          </div>
+          <div class="ambient-vol-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+            <input type="range" class="ambient-vol" min="0" max="100" value="40" oninput="setAmbientVol(this.value)" title="Volume"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          </div>
         </div>
       </div>
-      <div class="sessions-date-bar"><button class="btn-icon" onclick="sessDateNav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div><div style="font-size:.88rem;font-weight:600" id="sess-date-label">Friday</div><div style="font-size:.72rem;color:var(--text2)" id="sess-date-sub"></div></div><button class="btn-icon" onclick="sessDateNav(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button><button class="btn-today" id="sess-today-btn" onclick="sessGoToday()" style="display:none">Today</button><div class="sessions-total">Total: <span id="sess-total">0m</span></div></div>
+
+      <!-- Sessions Date Bar -->
+      <div class="sessions-date-bar">
+        <button class="btn-icon" onclick="sessDateNav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div>
+          <div style="font-size:.88rem;font-weight:600" id="sess-date-label">Today</div>
+          <div style="font-size:.72rem;color:var(--text2)" id="sess-date-sub"></div>
+        </div>
+        <button class="btn-icon" onclick="sessDateNav(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+        <button class="btn-today" id="sess-today-btn" onclick="sessGoToday()" style="display:none">Today</button>
+        <div class="sessions-total">Total: <span id="sess-total">0m</span></div>
+      </div>
+      <div class="filter-pills-wrap" id="sess-filter-pills"></div>
+
+      <!-- Task 9: Sessions Chart G -->
+      <div class="chart-card">
+        <div class="chart-card-top"><div class="chart-title">SESSIONS BY DAY</div></div>
+        <div class="chart-wrap"><canvas id="chart-sessions"></canvas></div>
+      </div>
+
       <div id="sess-list"></div>
     </div>
 
-    <!-- Notes -->
+    <!-- ─── Subjects ─── -->
+    <div id="view-subjects" class="view">
+      <div class="page-top">
+        <div class="page-top-left">
+          <h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 6v6m3-3H9" stroke-linecap="round" stroke-linejoin="round"/></svg>Subjects</h1>
+          <p>Study breakdown by subject</p>
+        </div>
+        <button class="btn-accent" onclick="openSubjectModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Subject
+        </button>
+      </div>
+      <div id="subjects-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; padding: 12px 0;"></div>
+    </div>
+
+    <!-- ─── Notes ─── -->
     <div id="view-notes" class="view">
-      <div class="page-top"><div class="page-top-left"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Notes</h1><p>Daily reflections and thoughts</p></div><button class="btn-accent" onclick="openModal('modal-note')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Note</button></div>
-      <div class="date-nav"><button class="btn-icon" onclick="noteDateNav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div><div class="date-nav-label" id="notes-date-label">Friday</div><div class="date-nav-sub" id="notes-date-sub"></div></div><button class="btn-icon" onclick="noteDateNav(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button><button class="btn-today" id="notes-today-btn" onclick="noteGoToday()" style="display:none">Today</button></div>
+      <div class="page-top">
+        <div class="page-top-left">
+          <h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Notes</h1>
+          <p>Daily reflections and thoughts</p>
+        </div>
+        <div class="notes-search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input class="cmd-input" type="text" id="notes-search-input" placeholder="Search notes..." oninput="filterNotesBySearch()">
+        </div>
+        <button class="btn-accent" onclick="openModal('modal-note')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Note
+        </button>
+      </div>
+      <div class="filter-pills-wrap" id="notes-mood-filter"></div>
+      <div class="date-nav">
+        <button class="btn-icon" onclick="noteDateNav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div>
+          <div class="date-nav-label" id="notes-date-label">Today</div>
+          <div class="date-nav-sub" id="notes-date-sub"></div>
+        </div>
+        <button class="btn-icon" onclick="noteDateNav(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+        <button class="btn-today" id="notes-today-btn" onclick="noteGoToday()" style="display:none">Today</button>
+      </div>
       <div id="notes-list"></div>
     </div>
 
-    <!-- Calendar -->
+    <!-- ─── Calendar ─── -->
     <div id="view-calendar" class="view">
-      <div class="page-top"><div class="page-top-left"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</h1><p>Schedule study sessions and deadlines</p></div><button class="btn-accent" onclick="openModal('modal-event')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Event</button></div>
+      <div class="page-top">
+        <div class="page-top-left">
+          <h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</h1>
+          <p>Schedule study sessions and deadlines</p>
+        </div>
+        <button class="btn-accent" onclick="openModal('modal-event')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Event
+        </button>
+      </div>
       <div class="cal-layout">
         <div class="cal-wrap">
-          <div class="cal-nav-row"><button class="btn-icon" onclick="calNav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><div class="cal-month" id="cal-month-label"></div><button class="btn-icon" onclick="calNav(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button></div>
-          <div class="cal-grid-head"><div class="cal-head-cell">Mon</div><div class="cal-head-cell">Tue</div><div class="cal-head-cell">Wed</div><div class="cal-head-cell">Thu</div><div class="cal-head-cell">Fri</div><div class="cal-head-cell">Sat</div><div class="cal-head-cell">Sun</div></div>
+          <div class="cal-nav-row">
+            <button class="btn-icon" onclick="calNav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <div class="cal-month" id="cal-month-label"></div>
+            <button class="btn-icon" onclick="calNav(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+          </div>
+          <div class="cal-grid-head">
+            <div class="cal-head-cell">Mon</div>
+            <div class="cal-head-cell">Tue</div>
+            <div class="cal-head-cell">Wed</div>
+            <div class="cal-head-cell">Thu</div>
+            <div class="cal-head-cell">Fri</div>
+            <div class="cal-head-cell">Sat</div>
+            <div class="cal-head-cell">Sun</div>
+          </div>
           <div class="cal-grid" id="cal-grid"></div>
         </div>
         <div class="cal-sidebar">
-          <div class="cal-sidebar-date"><span id="cal-sel-label">Select a day</span><button class="cal-sidebar-date add-link" onclick="openModal('modal-event')">+ Add</button></div>
+          <div class="cal-sidebar-date">
+            <span id="cal-sel-label">Select a day</span>
+            <button class="cal-sidebar-date add-link" onclick="openModal('modal-event')">+ Add</button>
+          </div>
           <div id="cal-events-list"><div class="cal-no-events">No events</div></div>
         </div>
       </div>
     </div>
 
-    <!-- Stats -->
+    <!-- ─── Stats ─── -->
     <div id="view-stats" class="view">
-      <div class="page-top-left" style="margin-bottom:24px"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Statistics</h1><p style="color:var(--text2);font-size:.85rem;margin-top:4px">Your performance over time</p></div>
-      <div class="stats-summary">
-        <div class="stat-summary-box"><div class="stat-summary-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Current Streak</div><div class="stat-summary-val" id="st-streak">0 days</div></div>
-        <div class="stat-summary-box"><div class="stat-summary-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Total Time</div><div class="stat-summary-val" id="st-total">0m</div></div>
-        <div class="stat-summary-box"><div class="stat-summary-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Goals Completed</div><div class="stat-summary-val" id="st-goals">0</div></div>
-        <div class="stat-summary-box"><div class="stat-summary-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>Completion Rate</div><div class="stat-summary-val" id="st-rate">0%</div></div>
+      <div class="page-top-left" style="margin-bottom:24px">
+        <h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Statistics</h1>
+        <p style="color:var(--text2);font-size:.85rem;margin-top:4px">Your performance over time</p>
       </div>
-      <!-- Activity Heatmap (GitHub-style) -->
+
+      <!-- Summary Row -->
+      <div class="stats-summary">
+        <div class="stat-summary-box">
+          <div class="stat-summary-top">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            Current Streak
+          </div>
+          <div class="stat-summary-val" id="st-streak">0 days</div>
+        </div>
+        <div class="stat-summary-box">
+          <div class="stat-summary-top">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Total Time
+          </div>
+          <div class="stat-summary-val" id="st-total">0m</div>
+        </div>
+        <div class="stat-summary-box">
+          <div class="stat-summary-top">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            Goals Completed
+          </div>
+          <div class="stat-summary-val" id="st-goals">0</div>
+        </div>
+        <div class="stat-summary-box">
+          <div class="stat-summary-top">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+            Completion Rate
+          </div>
+          <div class="stat-summary-val" id="st-rate">0%</div>
+        </div>
+      </div>
+
+      <!-- Heatmap -->
       <div class="chart-card heatmap-card">
-        <div class="chart-card-top"><div class="chart-title">ACTIVITY</div>
+        <div class="chart-card-top">
+          <div class="chart-title">ACTIVITY HEATMAP</div>
           <div class="heatmap-year-nav">
             <button class="heatmap-year-btn" id="heatmap-year-prev" onclick="heatmapYearNav(-1)">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
@@ -262,7 +668,6 @@
           </div>
         </div>
         <div class="heatmap-footer">
-          <a class="heatmap-learn" href="#" onclick="return false">Learn how we count activity</a>
           <div class="heatmap-legend">
             <span class="heatmap-legend-label">Less</span>
             <div class="heatmap-legend-cells">
@@ -276,44 +681,181 @@
           </div>
         </div>
       </div>
-      <div class="chart-card"><div class="chart-card-top"><div class="chart-title">FOCUS TIME (MINUTES)</div><div class="period-tabs"><button class="period-tab" onclick="setPeriod('daily',this)">Daily</button><button class="period-tab active" onclick="setPeriod('weekly',this)">Weekly</button><button class="period-tab" onclick="setPeriod('monthly',this)">Monthly</button></div></div><div class="chart-wrap"><canvas id="chart-time"></canvas></div></div>
-      <div class="chart-card"><div class="chart-card-top"><div class="chart-title">GOALS COMPLETED</div></div><div class="chart-wrap"><canvas id="chart-goals"></canvas></div></div>
+
+      <!-- Charts -->
+      <div class="chart-card">
+        <div class="chart-card-top">
+          <div class="chart-title">FOCUS TIME (MINUTES)</div>
+          <div class="period-tabs">
+            <button class="period-tab" onclick="setPeriod('daily',this)">Daily</button>
+            <button class="period-tab active" onclick="setPeriod('weekly',this)">Weekly</button>
+            <button class="period-tab" onclick="setPeriod('monthly',this)">Monthly</button>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="chart-time"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-top"><div class="chart-title">GOALS COMPLETED</div></div>
+        <div class="chart-wrap"><canvas id="chart-goals"></canvas></div>
+      </div>
+
+      <!-- Task 8: New Charts D, E, F -->
+      <div class="chart-card">
+        <div class="chart-card-top"><div class="chart-title">SUBJECT BALANCE RADAR</div></div>
+        <div class="chart-wrap"><canvas id="chart-radar"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-top"><div class="chart-title">30-DAY TREND</div></div>
+        <div class="chart-wrap"><canvas id="chart-30day"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-top"><div class="chart-title">WEEKLY GOAL PROGRESS</div></div>
+        <div id="weekly-ring-wrap" class="weekly-ring-wrap"></div>
+      </div>
+
       <div class="stats-bottom">
-        <div class="card card-p"><div class="section-title">Streak Records</div><div class="streak-row"><div class="streak-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Current streak</div><div class="streak-row-val" id="st2-streak">0 days</div></div><div class="streak-row"><div class="streak-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>Longest streak</div><div class="streak-row-val white" id="st2-longest">0 days</div></div></div>
-        <div class="card card-p"><div class="section-title">Time Breakdown</div><div class="time-breakdown-row"><div class="time-breakdown-label">Today</div><div class="time-breakdown-val" id="tb-today">0m</div></div><div class="time-breakdown-row"><div class="time-breakdown-label">This week</div><div class="time-breakdown-val" id="tb-week">0m</div></div><div class="time-breakdown-row"><div class="time-breakdown-label">This month</div><div class="time-breakdown-val" id="tb-month">0m</div></div><div class="time-breakdown-row"><div class="time-breakdown-label">All time</div><div class="time-breakdown-val" id="tb-all">0m</div></div></div>
+        <div class="card card-p">
+          <div class="section-title">Streak Records</div>
+          <div class="streak-row">
+            <div class="streak-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Current streak</div>
+            <div class="streak-row-val" id="st2-streak">0 days</div>
+          </div>
+          <div class="streak-row">
+            <div class="streak-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>Longest streak</div>
+            <div class="streak-row-val white" id="st2-longest">0 days</div>
+          </div>
+        </div>
+        <div class="card card-p">
+          <div class="section-title">Time Breakdown</div>
+          <div class="time-breakdown-row"><div class="time-breakdown-label">Today</div><div class="time-breakdown-val" id="tb-today">0m</div></div>
+          <div class="time-breakdown-row"><div class="time-breakdown-label">This week</div><div class="time-breakdown-val" id="tb-week">0m</div></div>
+          <div class="time-breakdown-row"><div class="time-breakdown-label">This month</div><div class="time-breakdown-val" id="tb-month">0m</div></div>
+          <div class="time-breakdown-row"><div class="time-breakdown-label">All time</div><div class="time-breakdown-val" id="tb-all">0m</div></div>
+        </div>
       </div>
     </div>
 
-    <!-- Leaderboard -->
+    <!-- ─── Leaderboard ─── -->
     <div id="view-leaderboard" class="view">
-      <div class="page-top-left" style="margin-bottom:24px"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Leaderboard</h1><p style="color:var(--text2);font-size:.85rem;margin-top:4px">Ranked by streak length and study hours</p></div>
+      <div class="page-top-left" style="margin-bottom:24px">
+        <h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>Leaderboard</h1>
+        <p style="color:var(--text2);font-size:.85rem;margin-top:4px">Ranked by streak length and study hours</p>
+      </div>
       <div class="lb-podium" id="lb-podium"></div>
-      <div class="lb-table"><div class="lb-table-head"><div>#</div><div>USER</div><div>STREAK</div><div>TIME</div><div>GOALS</div></div><div id="lb-rows"></div></div>
-    </div>
-
-    <!-- Community -->
-    <div id="view-community" class="view">
-      <div class="page-top-left" style="margin-bottom:24px"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Community</h1><p style="color:var(--text2);font-size:.85rem;margin-top:4px">See what others are tracking today</p></div>
-      <div class="community-layout">
-        <div><div class="section-label">MEMBERS</div><div class="members-list" id="members-list"></div></div>
-        <div class="community-detail" id="community-detail"><div class="cd-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><div>Select a user to view their progress</div></div></div>
+      <div class="lb-table">
+        <div class="lb-table-head">
+          <div>#</div><div>USER</div><div>STREAK</div><div>TIME</div><div>GOALS</div>
+        </div>
+        <div id="lb-rows"></div>
       </div>
     </div>
 
-    <!-- Settings -->
+    <!-- ─── Community ─── -->
+    <div id="view-community" class="view">
+      <div class="page-top-left" style="margin-bottom:24px">
+        <h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Community</h1>
+        <p style="color:var(--text2);font-size:.85rem;margin-top:4px">See what others are tracking today</p>
+      </div>
+      <div class="community-layout">
+        <div>
+          <div class="section-label">MEMBERS</div>
+          <div class="members-list" id="members-list"></div>
+        </div>
+        <div class="community-detail" id="community-detail">
+          <div class="cd-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <div>Select a user to view their progress</div>
+          </div>
+        </div>
+      </div>
+      <div class="community-chat-card">
+        <div class="community-chat-head">
+          <div>
+            <div class="section-title">Study Room Chat</div>
+            <div class="community-chat-sub">Shared messages for everyone in this project</div>
+          </div>
+          <div class="community-chat-badge" id="community-chat-mode">Live</div>
+        </div>
+        <div class="community-chat-list" id="community-chat-list">
+          <div class="goal-empty">No messages yet</div>
+        </div>
+        <div class="community-chat-compose">
+          <input id="community-chat-input" maxlength="500" placeholder="Share a study update..." onkeydown="if(event.key==='Enter')sendCommunityMessage()"/>
+          <button class="btn-accent" onclick="sendCommunityMessage()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Settings ─── -->
     <div id="view-settings" class="view">
-      <div class="page-top-left" style="margin-bottom:24px"><h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</h1><p style="color:var(--text2);font-size:.85rem;margin-top:4px">Customize your StudyTrack experience</p></div>
+      <div class="page-top-left" style="margin-bottom:24px">
+        <h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</h1>
+        <p style="color:var(--text2);font-size:.85rem;margin-top:4px">Customize your StudyTrack experience</p>
+      </div>
       <div class="settings-grid">
         <div class="settings-card">
           <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Pomodoro</h3>
-          <div class="settings-row"><div><div class="settings-row-label">Focus Duration</div><div class="settings-row-sub">Length of focus period</div></div><input class="settings-input" type="number" id="set-focus" value="25" min="1" max="120" onchange="saveSettings()"/><span style="font-size:.8rem;color:var(--text3);margin-left:4px">min</span></div>
-          <div class="settings-row"><div><div class="settings-row-label">Short Break</div><div class="settings-row-sub">Break after a focus session</div></div><input class="settings-input" type="number" id="set-short" value="5" min="1" max="30" onchange="saveSettings()"/><span style="font-size:.8rem;color:var(--text3);margin-left:4px">min</span></div>
-          <div class="settings-row"><div><div class="settings-row-label">Long Break</div><div class="settings-row-sub">Break after 4 focus sessions</div></div><input class="settings-input" type="number" id="set-long" value="15" min="1" max="60" onchange="saveSettings()"/><span style="font-size:.8rem;color:var(--text3);margin-left:4px">min</span></div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">Focus Duration</div><div class="settings-row-sub">Length of focus period</div></div>
+            <input class="settings-input" type="number" id="set-focus" value="25" min="1" max="120" onchange="saveSettings()"/>
+            <span style="font-size:.8rem;color:var(--text3);margin-left:4px">min</span>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">Short Break</div><div class="settings-row-sub">Break after a focus session</div></div>
+            <input class="settings-input" type="number" id="set-short" value="5" min="1" max="30" onchange="saveSettings()"/>
+            <span style="font-size:.8rem;color:var(--text3);margin-left:4px">min</span>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">Long Break</div><div class="settings-row-sub">Break after 4 focus sessions</div></div>
+            <input class="settings-input" type="number" id="set-long" value="15" min="1" max="60" onchange="saveSettings()"/>
+            <span style="font-size:.8rem;color:var(--text3);margin-left:4px">min</span>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">Weekly Study Goal</div><div class="settings-row-sub">Target focus time per week</div></div>
+            <input class="settings-input" type="number" id="set-weekly-goal" value="600" min="1" onchange="saveSettings()"/>
+            <span style="font-size:.8rem;color:var(--text3);margin-left:4px">min/week</span>
+          </div>
+        </div>
+        <div class="settings-card">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Reminders</h3>
+          <div class="settings-row">
+            <div><div class="settings-row-label">Daily Study Reminder</div><div class="settings-row-sub">Browser notification at your chosen time</div></div>
+            <button class="switch" id="reminder-toggle" onclick="toggleReminderSetting()" aria-label="Toggle reminders"><span></span></button>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">Reminder Time</div><div class="settings-row-sub">Local time on this device</div></div>
+            <input class="settings-time-input" type="time" id="reminder-time" value="20:00" onchange="saveReminderSettings()"/>
+          </div>
+        </div>
+        <div class="settings-card">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 15h-2v-2h2v2m0-4h-2V7h2v6z"/></svg>Subjects</h3>
+          <div id="subjects-chips-wrap" style="margin-bottom:14px;display:flex;flex-wrap:wrap;gap:6px">
+            <!-- Rendered by JS -->
+          </div>
+          <div class="settings-row" style="gap:6px">
+            <div style="flex:1;display:flex;gap:6px;align-items:center;min-width:0">
+              <div style="display:flex;gap:4px;align-items:center">
+                <div class="subject-color-picker" id="subject-color-input" style="width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border);cursor:pointer;background:var(--accent)"></div>
+              </div>
+              <input type="text" id="subject-emoji" placeholder="emoji" maxlength="2" style="width:40px;padding:6px 8px;border-radius:8px;border:1.5px solid var(--border);background:var(--card2);color:var(--text);font-size:.8rem;text-align:center"/>
+              <input type="text" id="subject-name" placeholder="Name" style="flex:1;padding:6px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--card2);color:var(--text);font-size:.84rem"/>
+            </div>
+            <button class="btn-accent" onclick="addSubject()" style="padding:6px 12px;font-size:.8rem;gap:4px">+ Add</button>
+          </div>
         </div>
         <div class="settings-card">
           <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Data</h3>
-          <div class="settings-row"><div><div class="settings-row-label">Export Data</div><div class="settings-row-sub">Download all your data as JSON</div></div><button class="btn-export" onclick="exportData()">Export</button></div>
-          <div class="settings-row"><div><div class="settings-row-label">Reset Data</div><div class="settings-row-sub">Delete all your goals, sessions, and notes</div></div><button class="btn-danger" onclick="resetData()">Reset</button></div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">Export Data</div><div class="settings-row-sub">Download all your data as JSON</div></div>
+            <button class="btn-export" onclick="exportData()">Export</button>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">Reset Data</div><div class="settings-row-sub">Delete all your goals, sessions, and notes</div></div>
+            <button class="btn-danger" onclick="resetData()">Reset</button>
+          </div>
         </div>
       </div>
     </div>
@@ -324,39 +866,160 @@
   <!-- Mobile Bottom Navigation -->
   <div class="mobile-bottom-nav">
     <div class="mobile-nav-items">
-      <button class="mob-nav-item active" data-view="dashboard" onclick="showView('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Home</span></button>
-      <button class="mob-nav-item" data-view="goals" onclick="showView('goals')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span>Goals</span></button>
-      <button class="mob-nav-item" data-view="sessions" onclick="showView('sessions')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Timer</span></button>
-      <button class="mob-nav-item" data-view="notes" onclick="showView('notes')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span>Notes</span></button>
-      <button class="mob-nav-item" data-view="calendar" onclick="showView('calendar')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></button>
-      <button class="mob-nav-item" data-view="leaderboard" onclick="showView('leaderboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg><span>Ranks</span></button>
+      <button class="mob-nav-item active" data-view="dashboard" onclick="showView('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="mob-nav-item" data-view="goals" onclick="showView('goals')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        <span>Goals</span>
+      </button>
+      <button class="mob-nav-item pomo-nav-btn" data-view="sessions" onclick="showView('sessions')">
+        <div class="mob-nav-pomo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <span>Timer</span>
+      </button>
+      <button class="mob-nav-item" data-view="notes" onclick="showView('notes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <span>Notes</span>
+      </button>
+      <button class="mob-nav-item" data-view="subjects" onclick="showView('subjects')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 6v6m3-3H9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Subjects</span>
+      </button>
+      <button class="mob-nav-item" data-view="stats" onclick="showView('stats')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span>Stats</span>
+      </button>
+      <button class="mob-nav-item" data-view="leaderboard" onclick="showView('leaderboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        <span>Ranks</span>
+      </button>
+      <button class="mob-nav-item" data-view="community" onclick="showView('community')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Community</span>
+      </button>
+      <button class="mob-nav-item" data-view="settings" onclick="showView('settings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.19.59.74 1 1.36 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Settings</span>
+      </button>
     </div>
   </div>
 </div>
 
 <!-- ═══ MODALS ═══ -->
-<div class="overlay" id="modal-goal" onclick="if(event.target===this)closeModal('modal-goal')"><div class="modal"><div class="modal-title">Add Goal<button class="modal-close" onclick="closeModal('modal-goal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-field"><label>Goal Description</label><input type="text" id="goal-text" placeholder="What do you want to achieve today?" onkeydown="if(event.key==='Enter')addGoal()"/></div><div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-goal')">Cancel</button><button class="btn-modal-submit" onclick="addGoal()">Add Goal</button></div></div></div>
+<div class="overlay" id="modal-goal" onclick="if(event.target===this)closeModal('modal-goal')">
+  <div class="modal">
+    <div class="modal-title">Add Goal<button class="modal-close" onclick="closeModal('modal-goal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-field"><label>Goal Description</label><input type="text" id="goal-text" placeholder="What do you want to achieve today?" onkeydown="if(event.key==='Enter')addGoal()"/></div>
+    <div class="modal-field"><label>Subject</label><div id="goal-subject-picker"></div></div>
+    <div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-goal')">Cancel</button><button class="btn-modal-submit" onclick="addGoal()">Add Goal</button></div>
+  </div>
+</div>
 
-<div class="overlay" id="modal-note" onclick="if(event.target===this)closeModal('modal-note')"><div class="modal"><div class="modal-title">Add Note<button class="modal-close" onclick="closeModal('modal-note')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-field"><label>Mood</label><div class="mood-options"><button class="mood-opt active" onclick="selectMood(this,'Good')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Good</button><button class="mood-opt" onclick="selectMood(this,'Great')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Great</button><button class="mood-opt" onclick="selectMood(this,'Okay')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Okay</button><button class="mood-opt" onclick="selectMood(this,'Tired')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 10s-1.5-1-4-1-4 1-4 1"/><line x1="10" y1="15" x2="14" y2="15"/></svg>Tired</button><button class="mood-opt" onclick="selectMood(this,'Stressed')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><path d="M9 9h.01"/><path d="M15 9h.01"/></svg>Stressed</button></div></div><div class="modal-field"><label>Note</label><textarea id="note-text" placeholder="Write your thoughts..."></textarea></div><div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-note')">Cancel</button><button class="btn-modal-submit" onclick="addNote()">Save Note</button></div></div></div>
+<div class="overlay" id="modal-note" onclick="if(event.target===this)closeModal('modal-note')">
+  <div class="modal">
+    <div class="modal-title">Add Note<button class="modal-close" onclick="closeModal('modal-note')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-field"><label>Mood</label>
+      <div class="mood-options">
+        <button class="mood-opt active" onclick="selectMood(this,'Good')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Good</button>
+        <button class="mood-opt" onclick="selectMood(this,'Great')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Great</button>
+        <button class="mood-opt" onclick="selectMood(this,'Okay')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Okay</button>
+        <button class="mood-opt" onclick="selectMood(this,'Tired')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 10s-1.5-1-4-1-4 1-4 1"/><line x1="10" y1="15" x2="14" y2="15"/></svg>Tired</button>
+        <button class="mood-opt" onclick="selectMood(this,'Stressed')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><path d="M9 9h.01"/><path d="M15 9h.01"/></svg>Stressed</button>
+      </div>
+    </div>
+    <div class="modal-field"><label>Subject</label><div id="note-subject-picker"></div></div>
+    <div class="modal-field"><label>Note</label><textarea id="note-text" placeholder="Write your thoughts..."></textarea></div>
+    <div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-note')">Cancel</button><button class="btn-modal-submit" onclick="addNote()">Save Note</button></div>
+  </div>
+</div>
 
-<div class="overlay" id="modal-event" onclick="if(event.target===this)closeModal('modal-event')"><div class="modal"><div class="modal-title">Add Event<button class="modal-close" onclick="closeModal('modal-event')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-field"><label>Event Title</label><input type="text" id="event-title" placeholder="e.g. Study session, Exam..."/></div><div class="modal-field"><label>Date</label><input type="date" id="event-date"/></div><div class="modal-field"><label>Time (optional)</label><input type="time" id="event-time"/></div><div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-event')">Cancel</button><button class="btn-modal-submit" onclick="addEvent()">Add Event</button></div></div></div>
+<!-- Task 9: Post-Session Feedback Modal -->
+<div class="overlay" id="modal-session-feedback" onclick="if(event.target===this)closeModal('modal-session-feedback')">
+  <div class="modal">
+    <div class="modal-title">Session Complete 🎉<button class="modal-close" onclick="closeModal('modal-session-feedback')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="session-summary-grid" id="session-summary-grid"></div>
+    <div class="session-quote" id="session-summary-quote"></div>
+    <div class="modal-footer"><button class="btn-modal-cancel" onclick="logAnotherSession()">Log Another</button><button class="btn-modal-submit" onclick="closeModal('modal-session-feedback')">Done</button></div>
+  </div>
+</div>
 
-<div class="overlay" id="modal-profile" onclick="if(event.target===this)closeModal('modal-profile')"><div class="modal"><div class="modal-title">My Profile<button class="modal-close" onclick="closeModal('modal-profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-field"><label>Display Name</label><input type="text" id="profile-name" placeholder="Your display name"/></div><div class="modal-field"><label>Username</label><input type="text" id="profile-username" placeholder="Choose a unique username" onkeydown="if(event.key===' ')event.preventDefault()"/><div style="font-size:0.7rem;color:var(--text3);margin-top:4px">Letters, numbers, underscores only. This is your public handle.</div></div><div class="modal-field"><label>Email</label><input type="email" id="profile-email" disabled style="opacity:0.5;cursor:not-allowed"/><div style="font-size:0.7rem;color:var(--text3);margin-top:4px">Email cannot be changed here.</div></div><div style="height:1px;background:var(--border);margin:18px 0"></div><div class="modal-field"><label>Current Password</label><input type="password" id="profile-current-pass" placeholder="Enter current password"/></div><div class="modal-field"><label>New Password</label><input type="password" id="profile-new-pass" placeholder="Min 6 characters"/></div><div class="modal-field"><label>Confirm New Password</label><input type="password" id="profile-confirm-pass" placeholder="Re-enter new password"/></div><div id="profile-err" style="background:var(--red-dim);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:9px 12px;color:var(--red);font-size:0.78rem;margin-bottom:12px;display:none"></div><div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-profile')">Cancel</button><button class="btn-modal-submit" onclick="saveProfile()">Save Changes</button></div></div></div>
+<div class="overlay" id="modal-subject" onclick="if(event.target===this)closeModal('modal-subject')">
+  <div class="modal">
+    <div class="modal-title">Add Subject<button class="modal-close" onclick="closeModal('modal-subject')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="subject-add-modal-row">
+      <div id="modal-subject-color" class="subject-color-picker"></div>
+      <input type="text" id="modal-subject-emoji" placeholder="emoji" maxlength="2"/>
+      <input type="text" id="modal-subject-name" placeholder="Subject name"/>
+    </div>
+    <div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-subject')">Cancel</button><button class="btn-modal-submit" onclick="addSubjectFromModal()">Add Subject</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="modal-event" onclick="if(event.target===this)closeModal('modal-event')">
+  <div class="modal">
+    <div class="modal-title">Add Event<button class="modal-close" onclick="closeModal('modal-event')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-field"><label>Event Title</label><input type="text" id="event-title" placeholder="e.g. Study session, Exam..."/></div>
+    <div class="modal-field"><label>Date</label><input type="date" id="event-date"/></div>
+    <div class="modal-field"><label>Time (optional)</label><input type="time" id="event-time"/></div>
+    <div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-event')">Cancel</button><button class="btn-modal-submit" onclick="addEvent()">Add Event</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="modal-profile" onclick="if(event.target===this)closeModal('modal-profile')">
+  <div class="modal">
+    <div class="modal-title">My Profile<button class="modal-close" onclick="closeModal('modal-profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-field"><label>Display Name</label><input type="text" id="profile-name" placeholder="Your display name"/></div>
+    <div class="modal-field"><label>Username</label><input type="text" id="profile-username" placeholder="Choose a unique username" onkeydown="if(event.key===' ')event.preventDefault()"/><div style="font-size:.7rem;color:var(--text3);margin-top:4px">Letters, numbers, underscores only.</div></div>
+    <div class="modal-field"><label>Email</label><input type="email" id="profile-email" disabled style="opacity:0.5;cursor:not-allowed"/><div style="font-size:.7rem;color:var(--text3);margin-top:4px">Email cannot be changed here.</div></div>
+    <div style="height:1px;background:var(--border);margin:18px 0"></div>
+    <div class="modal-field"><label>Current Password</label><input type="password" id="profile-current-pass" placeholder="Enter current password"/></div>
+    <div class="modal-field"><label>New Password</label><input type="password" id="profile-new-pass" placeholder="Min 6 characters"/></div>
+    <div class="modal-field"><label>Confirm New Password</label><input type="password" id="profile-confirm-pass" placeholder="Re-enter new password"/></div>
+    <div id="profile-err" style="background:var(--red-dim);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:9px 12px;color:var(--red);font-size:.78rem;margin-bottom:12px;display:none"></div>
+    <div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-profile')">Cancel</button><button class="btn-modal-submit" onclick="saveProfile()">Save Changes</button></div>
+  </div>
+</div>
+
+<!-- ═══ FORGOT PASSWORD MODAL ═══ -->
+<div class="overlay" id="modal-forgot-password" onclick="if(event.target===this)closeModal('modal-forgot-password')">
+  <div class="modal">
+    <div class="modal-title">Reset Password<button class="modal-close" onclick="closeModal('modal-forgot-password')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div style="font-size:.84rem;color:var(--text2);margin-bottom:16px">Enter your email address and we'll send you a link to reset your password.</div>
+    <div class="modal-field"><label>Email Address</label><input type="email" id="forgot-email" placeholder="you@email.com"/></div>
+    <div id="forgot-err" style="background:var(--red-dim);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:9px 12px;color:var(--red);font-size:.78rem;margin-bottom:12px;display:none"></div>
+    <div id="forgot-success" style="background:var(--green-dim);border:1px solid rgba(34,197,94,0.2);border-radius:8px;padding:9px 12px;color:var(--green);font-size:.78rem;margin-bottom:12px;display:none"></div>
+    <div class="modal-footer"><button class="btn-modal-cancel" onclick="closeModal('modal-forgot-password')">Cancel</button><button class="btn-modal-submit" onclick="sendPasswordReset()">Send Reset Link</button></div>
+  </div>
+</div>
 
 <!-- ═══ COMMAND PALETTE ═══ -->
 <div class="cmd-overlay" id="cmd-palette" onclick="if(event.target===this)closeCmdPalette()">
   <div class="cmd-box">
-    <div class="cmd-input-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="cmd-input" id="cmd-input" placeholder="Type a command or search..." oninput="filterCommands()" onkeydown="cmdKeyDown(event)"/></div>
+    <div class="cmd-input-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="cmd-input" id="cmd-input" placeholder="Type a command or search..." oninput="filterCommands()" onkeydown="cmdKeyDown(event)"/>
+      <kbd class="cmd-esc-hint">Esc</kbd>
+    </div>
     <div class="cmd-results" id="cmd-results"></div>
   </div>
 </div>
 
 <!-- ═══ FOCUS MODE OVERLAY ═══ -->
 <div class="focus-overlay" id="focus-overlay">
+  <div class="focus-particles" id="focus-particles"></div>
   <div class="focus-ring-wrap">
-    <svg class="focus-ring-svg" viewBox="0 0 300 300">
-      <circle class="focus-ring-bg" cx="150" cy="150" r="132"/>
-      <circle class="focus-ring-fg" id="focus-ring-fg" cx="150" cy="150" r="132" stroke-dasharray="829" stroke-dashoffset="0"/>
+    <svg class="focus-ring-svg" viewBox="0 0 320 320">
+      <defs>
+        <linearGradient id="focusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="var(--accent)"/>
+          <stop offset="100%" stop-color="var(--violet)"/>
+        </linearGradient>
+      </defs>
+      <circle class="focus-ring-bg" cx="160" cy="160" r="140"/>
+      <circle class="focus-ring-fg" id="focus-ring-fg" cx="160" cy="160" r="140" stroke-dasharray="880" stroke-dashoffset="0"/>
     </svg>
     <div class="focus-ring-center">
       <div class="focus-time" id="focus-time">25:00</div>
@@ -364,17 +1027,23 @@
     </div>
   </div>
   <div class="ambient-bar" id="focus-ambient-bar" style="margin-top:0">
-    <button class="ambient-btn" data-sound="rain" onclick="toggleAmbient('rain',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6l3.5 3.5"/><circle cx="12" cy="14" r="8"/></svg>Rain</button>
+    <button class="ambient-btn" data-sound="rain" onclick="toggleAmbient('rain',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="16" y1="13" x2="16" y2="21"/><line x1="8" y1="13" x2="8" y2="21"/><line x1="12" y1="15" x2="12" y2="23"/><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg>Rain</button>
     <button class="ambient-btn" data-sound="waves" onclick="toggleAmbient('waves',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2s2.5 2 2.5 2"/></svg>Waves</button>
     <button class="ambient-btn" data-sound="wind" onclick="toggleAmbient('wind',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2"/></svg>Wind</button>
     <button class="ambient-btn" data-sound="brown" onclick="toggleAmbient('brown',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 4 18 3-9h6"/></svg>Brown</button>
   </div>
-  <div class="focus-hint"><span><kbd>Space</kbd> Play/Pause</span><span><kbd>Esc</kbd> Exit</span></div>
+  <div class="focus-hint">
+    <span><kbd>Space</kbd> Play/Pause</span>
+    <span><kbd>Esc</kbd> Exit</span>
+  </div>
 </div>
+
+<!-- Confetti Canvas -->
+<canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:9999;display:none"></canvas>
 
 <!-- Toasts -->
 <div id="toast-wrap"></div>
 
-<script src="studyapp.js"></script>
+<script src="js2.js"></script>
 </body>
 </html>
